@@ -16,7 +16,6 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityTeleportEvent;
@@ -28,7 +27,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
 
-import java.util.Locale;
 import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = SkyAccessories.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -208,31 +206,5 @@ public class CommonEventHandler {
     @SubscribeEvent
     public static void registerCommands(RegisterCommandsEvent event) {
         GodCommands.register(event);
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void onCommand(CommandEvent event) {
-        String raw = event.getParseResults().getReader().getString().toLowerCase(Locale.ROOT).trim();
-        if (raw.startsWith("/")) raw = raw.substring(1);
-        if (raw.startsWith("give") && raw.contains("sky_accessories:fate")) {
-            var src = event.getParseResults().getContext().getSource();
-            if (src != null) src.sendFailure(Component.translatable("message.sky_accessories.give_blocked"));
-            event.setCanceled(true);
-            return;
-        }
-        if (raw.startsWith("curios") && raw.contains("clear")) {
-            var src = event.getParseResults().getContext().getSource();
-            if (src != null && src.getEntity() instanceof ServerPlayer sp && Util.isOwnerActive(sp)) {
-                src.sendFailure(Component.translatable("message.sky_accessories.curios_clear_blocked"));
-                event.setCanceled(true);
-            }
-        }
-        if (raw.contains("clear")) {
-            var src =  event.getParseResults().getContext().getSource();
-            if (src != null && src.getEntity() instanceof ServerPlayer sp && Util.isOwnerActive(sp)) {
-                src.sendFailure(Component.translatable("message.sky_accessories.clear_blocked"));
-                event.setCanceled(true);
-            }
-        }
     }
 }

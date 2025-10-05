@@ -5,6 +5,9 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "sky_accessories.refmap.json",
   "mixins": [
+    "ClearInventoryCommandsMixin",
+    "CuriosCommandMixin",
+    "GiveCommandMixin",
     "LivingEntityMixin"
   ],
   "client": [
