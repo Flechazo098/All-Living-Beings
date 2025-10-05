@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.flechazo.sky_accessories.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "sky_accessories.refmap.json",
+  "mixins": [
+    "LivingEntityMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}
