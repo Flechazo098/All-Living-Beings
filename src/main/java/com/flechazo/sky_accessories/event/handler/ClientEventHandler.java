@@ -1,4 +1,4 @@
-package com.flechazo.sky_accessories.event;
+package com.flechazo.sky_accessories.event.handler;
 
 import com.flechazo.sky_accessories.client.ClientKeyMappings;
 import com.flechazo.sky_accessories.network.SkyNet;
@@ -9,7 +9,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = com.flechazo.sky_accessories.SkyAccessories.MODID)
-public class ClientEvents {
+public class ClientEventHandler {
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent e) {
         if (e.phase != TickEvent.Phase.END) return;

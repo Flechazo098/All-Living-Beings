@@ -1,6 +1,8 @@
-package com.flechazo.sky_accessories.event;
+package com.flechazo.sky_accessories.event.handler;
 
 import com.flechazo.sky_accessories.SkyAccessories;
+import com.flechazo.sky_accessories.event.CommandInterceptEvent;
+import com.flechazo.sky_accessories.event.LivingSetHealthEvent;
 import com.flechazo.sky_accessories.utils.Util;
 import com.flechazo.sky_accessories.config.Config;
 import net.minecraft.network.chat.Component;

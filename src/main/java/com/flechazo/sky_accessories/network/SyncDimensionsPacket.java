@@ -28,7 +28,7 @@ public record SyncDimensionsPacket(List<ResourceLocation> ids) {
         var ctx = ctxSupplier.get();
         ctx.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(
                 Dist.CLIENT,
-                () -> () -> SyncDimensionsPacketClientHandler.handle(pkt, ctxSupplier)
+                () -> () -> PacketClientHandler.handleSyncDimensions(pkt, ctxSupplier)
         ));
         ctx.setPacketHandled(true);
     }

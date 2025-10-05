@@ -9,6 +9,10 @@ public class ClientSkyNet {
         SkyNet.CHANNEL.registerMessage(100, SyncDimensionsPacket.class,
                 SyncDimensionsPacket::encode,
                 SyncDimensionsPacket::decode,
-                SyncDimensionsPacketClientHandler::handle);
+                PacketClientHandler::handleSyncDimensions);
+        SkyNet.CHANNEL.registerMessage(101, OpenGodConfigPacket.class,
+                OpenGodConfigPacket::encode,
+                OpenGodConfigPacket::decode,
+                PacketClientHandler::handleOpenGodConfig);
     }
 }

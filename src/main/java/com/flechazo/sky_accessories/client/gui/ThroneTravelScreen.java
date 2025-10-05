@@ -35,16 +35,16 @@ public class ThroneTravelScreen extends Screen {
         for (var id : dims) {
             int by = y + i * (bh + 4);
             String key = "dimension." + id.getNamespace() + "." + id.getPath();
-            // 绑定按钮（左侧）
+
             addRenderableWidget(Button.builder(Component.translatable("gui.sky_accessories.bind"), b -> {
                 SkyNet.sendBindTeleport(id);
             }).bounds(x, by, bindW, bh).build());
-            // 主传送按钮（中间）
+
             addRenderableWidget(Button.builder(Component.translatable(key), b -> {
                 SkyNet.sendTeleportRequest(id, 0);
                 onClose();
             }).bounds(x + bindW + 4, by, mainW, bh).build());
-            // 特种按钮（右侧）
+
             ResourceLocation overworld = new ResourceLocation("minecraft", "overworld");
             ResourceLocation the_end = new ResourceLocation("minecraft", "the_end");
             ResourceLocation the_nether = new ResourceLocation("minecraft", "the_nether");

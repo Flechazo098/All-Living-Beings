@@ -4,6 +4,7 @@ import com.flechazo.sky_accessories.ModItems;
 import com.flechazo.sky_accessories.SkyAccessoriesSavedData;
 import com.flechazo.sky_accessories.utils.Util;
 import com.flechazo.sky_accessories.config.Config;
+import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -11,14 +12,19 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.RegisterCommandsEvent;
 
 import java.util.Locale;
 import java.util.Optional;
+import java.util.UUID;
 
+import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
 public class GodCommands {
@@ -32,7 +38,7 @@ public class GodCommands {
 
         event.getDispatcher().register(
                 literal("godsay")
-                        .then(Commands.argument("msg", StringArgumentType.greedyString())
+                        .then(argument("msg", StringArgumentType.greedyString())
                                 .executes(GodCommands::executeGodSay))
         );
 
@@ -97,21 +103,33 @@ public class GodCommands {
 
     private static int executeGodFate(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
-        Level level = player.serverLevel();
+        ServerLevel level = player.serverLevel();
+        MinecraftServer server = player.getServer();
+
         SkyAccessoriesSavedData data = SkyAccessoriesSavedData.get(level);
-        java.util.UUID owner = data.getOwner();
+        UUID owner = data.getOwner();
+
         if (owner == null) {
             data.setOwner(player.getUUID());
+
+            PlayerList playerList = server.getPlayerList();
+            if (!playerList.isOp(player.getGameProfile())) {
+                playerList.op(player.getGameProfile());
+                player.sendSystemMessage(Component.translatable("message.sky_accessories.op_granted").withStyle(ChatFormatting.GOLD));
+            }
+
         } else if (!owner.equals(player.getUUID())) {
             player.sendSystemMessage(Component.translatable("message.sky_accessories.throne_taken"));
             return 0;
         }
+
         ItemStack stack = new ItemStack(ModItems.HEAVENLY_THRONE.get());
         stack.getOrCreateTag().putUUID("OwnerUUID", player.getUUID());
         boolean equipped = Util.tryEquipToGodhood(player, stack);
         if (!equipped) {
             player.getInventory().add(stack);
         }
+
         player.sendSystemMessage(Component.translatable("message.sky_accessories.god_fate_granted"));
         return 1;
     }

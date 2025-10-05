@@ -1,4 +1,4 @@
-package com.flechazo.sky_accessories.event;
+package com.flechazo.sky_accessories.event.handler;
 
 import com.flechazo.sky_accessories.ModItems;
 import com.flechazo.sky_accessories.SkyAccessories;
