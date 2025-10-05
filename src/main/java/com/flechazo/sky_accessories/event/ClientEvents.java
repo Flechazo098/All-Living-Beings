@@ -1,5 +1,6 @@
-package com.flechazo.sky_accessories.client;
+package com.flechazo.sky_accessories.event;
 
+import com.flechazo.sky_accessories.client.ClientKeyMappings;
 import com.flechazo.sky_accessories.network.SkyNet;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
@@ -14,8 +15,13 @@ public class ClientEvents {
         if (e.phase != TickEvent.Phase.END) return;
         var mc = Minecraft.getInstance();
         if (mc.player == null) return;
+
         while (ClientKeyMappings.OPEN_THRONE_GUI.consumeClick()) {
             SkyNet.requestDimensions();
+        }
+
+        while (ClientKeyMappings.OPEN_CONFIG_GUI.consumeClick()) {
+            SkyNet.requestGodConfig();
         }
     }
 }

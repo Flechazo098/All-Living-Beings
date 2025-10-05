@@ -2,7 +2,7 @@ package com.flechazo.sky_accessories.client.command;
 
 import com.flechazo.sky_accessories.ModItems;
 import com.flechazo.sky_accessories.SkyAccessoriesSavedData;
-import com.flechazo.sky_accessories.Utils;
+import com.flechazo.sky_accessories.utils.Util;
 import com.flechazo.sky_accessories.config.Config;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -17,6 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.event.RegisterCommandsEvent;
 
 import java.util.Locale;
+import java.util.Optional;
 
 import static net.minecraft.commands.Commands.literal;
 
@@ -25,8 +26,8 @@ public class GodCommands {
     public static void register(RegisterCommandsEvent event) {
         event.getDispatcher().register(
                 literal("god")
-                        .then(Commands.argument("cmd", StringArgumentType.greedyString())
-                                .executes(GodCommands::executeGodCommand))
+                        .redirect(event.getDispatcher().getRoot())
+                                .executes(GodCommands::executeGodCommand)
         );
 
         event.getDispatcher().register(
@@ -45,12 +46,15 @@ public class GodCommands {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
         Level level = player.serverLevel();
 
-        if (!Config.COMMON.godPermissions.get()) {
+        SkyAccessoriesSavedData data = SkyAccessoriesSavedData.get(level);
+        boolean enabled = Optional.ofNullable(data)
+                .flatMap(SkyAccessoriesSavedData::getGodCommandsEnabledOverride)
+                .orElse(Config.COMMON.godPermissions.get());
+        if (!enabled) {
             player.sendSystemMessage(Component.translatable("message.sky_accessories.god_command_disabled"));
             return 0;
         }
 
-        SkyAccessoriesSavedData data = SkyAccessoriesSavedData.get(level);
         if (data == null || !player.getUUID().equals(data.getOwner())) {
             player.sendSystemMessage(Component.translatable("message.sky_accessories.not_god"));
             return 0;
@@ -60,7 +64,7 @@ public class GodCommands {
         String lower = cmd.trim().toLowerCase(Locale.ROOT);
         while (lower.startsWith("/")) lower = lower.substring(1);
         if (lower.startsWith("tp") || lower.startsWith("teleport")) {
-            com.flechazo.sky_accessories.Utils.grantNextTeleport(player);
+            Util.grantNextTeleport(player);
         }
         CommandSourceStack elevatedSource = ctx.getSource()
                 .withSuppressedOutput();
@@ -104,7 +108,7 @@ public class GodCommands {
         }
         ItemStack stack = new ItemStack(ModItems.HEAVENLY_THRONE.get());
         stack.getOrCreateTag().putUUID("OwnerUUID", player.getUUID());
-        boolean equipped = Utils.tryEquipToGodhood(player, stack);
+        boolean equipped = Util.tryEquipToGodhood(player, stack);
         if (!equipped) {
             player.getInventory().add(stack);
         }

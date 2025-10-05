@@ -1,6 +1,6 @@
 package com.flechazo.sky_accessories.network;
 
-import com.flechazo.sky_accessories.Utils;
+import com.flechazo.sky_accessories.utils.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -25,7 +25,7 @@ public class RequestDimensionsPacket {
         ctx.enqueueWork(() -> {
             ServerPlayer sp = ctx.getSender();
             if (sp == null) return;
-            if (!Utils.isOwnerActive(sp)) {
+            if (!Util.isOwnerActive(sp)) {
                 sp.displayClientMessage(Component.translatable("message.sky_accessories.not_god"), true);
                 return;
             }

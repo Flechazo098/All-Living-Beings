@@ -2,6 +2,7 @@ package com.flechazo.sky_accessories;
 
 import com.flechazo.sky_accessories.client.ClientKeyMappings;
 import com.flechazo.sky_accessories.config.Config;
+import com.flechazo.sky_accessories.utils.Util;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -47,7 +48,7 @@ public class HeavenlyThroneItem extends Item {
                 player.displayClientMessage(Component.translatable("message.sky_accessories.throne_taken"), true);
             }
             if (player instanceof ServerPlayer sp) {
-                boolean equipped = Utils.tryEquipToGodhood(sp, stack);
+                boolean equipped = Util.tryEquipToGodhood(sp, stack);
                 if (equipped) {
                     player.displayClientMessage(Component.translatable("message.sky_accessories.auto_equipped_godhood"), true);
                 }

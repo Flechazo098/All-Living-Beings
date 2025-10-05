@@ -39,18 +39,20 @@ public class Config {
             godSuppression = b.define("godSuppression", true);
             godAttack = b.define("godAttack", true);
             eternalTranscendence = b.define("eternalTranscendence", true);
-            fixedAttackDamage = b.defineInRange("fixedAttackDamage", 999999999, 0, Integer.MAX_VALUE);
+            fixedAttackDamage = b.defineInRange("fixedAttackDamage", 1000, 0, Integer.MAX_VALUE);
             b.pop();
             buffsEnabled = b.define("buffsEnabled", true);
             buffMode = b.defineInRange("buffMode", 3, 0, 3);
             positiveEffectIds = b.defineList("positiveEffectIds",
                     List.of(
-                            "minecraft:damage_resistance",
+                            "minecraft:resistance",
                             "minecraft:regeneration",
-                            "minecraft:movement_speed",
-                            "minecraft:dig_speed",
+                            "minecraft:speed",
+                            "minecraft:haste",
                             "minecraft:fire_resistance",
-                            "minecraft:water_breathing"
+                            "minecraft:water_breathing",
+                            "minecraft:strength",
+                            "minecraft:health_boost"
                     ), o -> o instanceof String);
             negativeEffectIds = b.defineList("negativeEffectIds",
                     List.of(

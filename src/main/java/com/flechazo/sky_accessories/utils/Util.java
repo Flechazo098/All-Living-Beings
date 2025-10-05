@@ -1,5 +1,7 @@
-package com.flechazo.sky_accessories;
+package com.flechazo.sky_accessories.utils;
 
+import com.flechazo.sky_accessories.ModItems;
+import com.flechazo.sky_accessories.SkyAccessoriesSavedData;
 import com.flechazo.sky_accessories.config.Config;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -22,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
-public class Utils {
+public class Util {
     public static final String EMPEROR_TEAM = "sky_emperor_title";
 
     public static boolean isOwnerActive(ServerPlayer p) {

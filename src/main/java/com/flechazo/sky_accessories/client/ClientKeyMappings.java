@@ -15,8 +15,14 @@ public class ClientKeyMappings {
             GLFW.GLFW_KEY_G,
             "key.categories.sky_accessories");
 
+    public static final KeyMapping OPEN_CONFIG_GUI = new KeyMapping(
+            "key.sky_accessories.open_config",
+            GLFW.GLFW_KEY_H,
+            "key.categories.sky_accessories");
+
     @SubscribeEvent
     public static void registerKeys(RegisterKeyMappingsEvent e) {
         e.register(OPEN_THRONE_GUI);
+        e.register(OPEN_CONFIG_GUI);
     }
 }
