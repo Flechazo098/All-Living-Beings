@@ -6,11 +6,14 @@
   "refmap": "all_living_beings.refmap.json",
   "mixins": [
     "ClearInventoryCommandsMixin",
-    "TeleportCommandMixin",
     "CuriosCommandMixin",
     "GiveCommandMixin",
+    "InventoryMenuMixin",
     "LivingEntityMixin",
-    "RootSpellMixin"
+    "RootSpellMixin",
+    "TelekinesisSpellMixin",
+    "TeleportCommandMixin",
+    "UtilsMixin"
   ],
   "client": [
   ],
