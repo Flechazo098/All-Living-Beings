@@ -3,10 +3,10 @@
   "minVersion": "0.8",
   "package": "com.flechazo.all_living_beings.mixin",
   "compatibilityLevel": "JAVA_17",
-  "refmap": "sky_accessories.refmap.json",
+  "refmap": "all_living_beings.refmap.json",
   "mixins": [
     "ClearInventoryCommandsMixin",
-    "CommandsMixin",
+    "TeleportCommandMixin",
     "CuriosCommandMixin",
     "GiveCommandMixin",
     "LivingEntityMixin",

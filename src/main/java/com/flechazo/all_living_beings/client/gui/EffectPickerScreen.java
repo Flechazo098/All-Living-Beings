@@ -15,22 +15,19 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class EffectPickerScreen extends Screen {
-    private final Screen parent;
-    private final boolean positiveMode;
-    private final Consumer<List<ResourceLocation>> onComplete;
-
-    private EditBox searchBox;
-    private List<ResourceLocation> allEffects;
-    private List<ResourceLocation> filteredEffects;
-    private final Set<ResourceLocation> selectedEffects;
-    private int scrollOffset = 0;
-
     private static final int ITEM_HEIGHT = 22;
     private static final int MAX_VISIBLE_ITEMS = 8;
     private static final int BUTTON_HEIGHT = 20;
     private static final int BUTTON_GAP = 5;
     private static final int MARGIN = 20;
-
+    private final Screen parent;
+    private final boolean positiveMode;
+    private final Consumer<List<ResourceLocation>> onComplete;
+    private final Set<ResourceLocation> selectedEffects;
+    private EditBox searchBox;
+    private List<ResourceLocation> allEffects;
+    private List<ResourceLocation> filteredEffects;
+    private int scrollOffset = 0;
     private LayoutInfo layout;
 
     public EffectPickerScreen(Screen parent, boolean positiveMode, Consumer<List<ResourceLocation>> onComplete) {

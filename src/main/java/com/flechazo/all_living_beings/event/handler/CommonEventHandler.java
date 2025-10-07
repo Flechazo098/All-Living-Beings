@@ -5,16 +5,14 @@ import com.flechazo.all_living_beings.client.command.GodCommands;
 import com.flechazo.all_living_beings.config.Config;
 import com.flechazo.all_living_beings.data.ALBSavedData;
 import com.flechazo.all_living_beings.network.SyncTitlePacket;
-import com.flechazo.all_living_beings.registry.ModItems;
 import com.flechazo.all_living_beings.registry.NetworkHandler;
 import com.flechazo.all_living_beings.utils.TeleportUtil;
 import com.flechazo.all_living_beings.utils.Util;
+import io.redspace.ironsspellbooks.api.events.SpellOnCastEvent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -47,60 +45,30 @@ public class CommonEventHandler {
         if (event.phase != TickEvent.Phase.END || !(event.player instanceof ServerPlayer sp)) {
             return;
         }
+
+        // 1) 前缀与头衔
         Util.updateEmperorTeamMembership(sp);
-        ALBSavedData data = ALBSavedData.get(sp.level());
-        UUID owner = data != null ? data.getOwner() : null;
-        boolean isOwner = owner != null && owner.equals(sp.getUUID());
 
-        if (isOwner && !Util.hasThrone(sp)) {
-            ItemStack found = ItemStack.EMPTY;
-            for (ItemStack stack : sp.getInventory().items) {
-                if (stack.is(ModItems.HEAVENLY_THRONE.get())) {
-                    found = stack;
-                    break;
-                }
-            }
-            if (found.isEmpty()) {
-                for (ItemStack stack : sp.getInventory().armor) {
-                    if (stack.is(ModItems.HEAVENLY_THRONE.get())) {
-                        found = stack;
-                        break;
-                    }
-                }
-            }
-            if (!found.isEmpty()) {
-                Util.tryEquipToGodhood(sp, found);
-            }
-        }
+        // 2) 绑定状态
+        boolean isOwner = Util.isBoundOwner(sp);
 
-        if (isOwner) {
-            sp.getAbilities().mayfly = true;
-        } else {
-            if (sp.getAbilities().flying) {
-                sp.getAbilities().flying = false;
-            }
-            sp.getAbilities().mayfly = false;
-        }
-        sp.onUpdateAbilities();
+        // 3) 自动佩戴天座（Curios）
+        Util.autoEquipThroneIfOwner(sp);
 
-        if (isOwner && Config.COMMON.godSuppression.get()) {
-            LivingEntity target = Util.findTarget(sp, 16);
-            if (target != null) {
-                Util.forceUnequip(target, sp);
-            }
-        }
-        Util.PurgeResult r = Util.purgeFateStacks(sp);
-        if (r == Util.PurgeResult.OWNER_EXCESS) {
-            sp.displayClientMessage(Component.translatable("message.all_living_beings.excess_fate_removed")
-                    .withStyle(ChatFormatting.YELLOW), true);
-        } else if (r == Util.PurgeResult.NON_OWNER) {
-            sp.displayClientMessage(Component.translatable("message.all_living_beings.non_owner_fate_purged")
-                    .withStyle(ChatFormatting.RED), true);
-        }
+        // 4) 飞行能力开关
+        Util.updateFlightAbilities(sp, isOwner);
 
-        if (isOwner) {
-            Util.applyEmperorBuffs(sp);
-        }
+        // 5) 铁魔法吟唱时间缩短属性
+        Util.applyCastTimeReductionAttribute(sp, isOwner);
+
+        // 6) 神权压制（强制卸下目标装备）
+        Util.handleGodSuppression(sp, isOwner);
+
+        // 7) 清理命运堆叠并提示
+        Util.purgeFateStacksAndNotify(sp);
+
+        // 8) 天帝增益
+        Util.tickEmperorBuffs(sp, isOwner);
     }
 
     @SubscribeEvent
@@ -207,5 +175,12 @@ public class CommonEventHandler {
     @SubscribeEvent
     public static void registerCommands(RegisterCommandsEvent event) {
         GodCommands.register(event);
+    }
+
+    @SubscribeEvent
+    public static void onSpellCast(SpellOnCastEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer sp)) return;
+        if (!Util.isOwnerActive(sp)) return;
+        event.setManaCost(1);
     }
 }

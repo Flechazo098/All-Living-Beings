@@ -12,6 +12,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 public class AllLivingBeings {
     public static final String MODID = "all_living_beings";
 
+    @SuppressWarnings("removal")
     public AllLivingBeings() {
         var modBus = FMLJavaModLoadingContext.get().getModEventBus();
         ModItems.ITEMS.register(modBus);

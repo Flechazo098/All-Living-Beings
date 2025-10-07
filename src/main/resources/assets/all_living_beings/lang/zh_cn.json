@@ -1,6 +1,5 @@
 {
-  "item.all_living_beings.fate": "天意",
-
+  "item.all_living_beings.fate": "<pulse base=0.8 a=0.25 f=1.0 w=0.3><fade minA=0.6 speed=1.0 w=0.3><rainb>天意</rainb></fade></pulse>",
   "message.all_living_beings.god_command_disabled": "§c神之权限已被服务器配置禁用。",
   "message.all_living_beings.god_say_disabled": "§c神谕广播已被服务器配置禁用。",
   "message.all_living_beings.not_god": "§c你并非天帝，无权行使神权。",

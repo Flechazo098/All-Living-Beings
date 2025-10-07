@@ -15,6 +15,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GodConfigScreen extends Screen {
+    private static final int TOTAL_PAGES = 3;
+    private final List<String> positiveEffectIds;
+    private final List<String> negativeEffectIds;
     private boolean absoluteDefense;
     private boolean absoluteAutonomy;
     private boolean godPermissions;
@@ -24,12 +27,8 @@ public class GodConfigScreen extends Screen {
     private int fixedAttackDamage;
     private boolean buffsEnabled;
     private int buffMode;
-    private final List<String> positiveEffectIds;
-    private final List<String> negativeEffectIds;
-
     private EditBox damageInput;
     private int currentPage = 0;
-    private static final int TOTAL_PAGES = 3;
 
     public GodConfigScreen(boolean absoluteDefense,
                            boolean absoluteAutonomy,

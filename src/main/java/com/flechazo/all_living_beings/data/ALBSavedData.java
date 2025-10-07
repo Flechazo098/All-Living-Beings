@@ -13,17 +13,17 @@ import java.util.Map;
 import java.util.UUID;
 
 public class ALBSavedData extends SavedData {
-    private UUID owner;
     private final Map<ResourceLocation, BlockPos> boundPositions = new HashMap<>();
+    private UUID owner;
+
+    public ALBSavedData() {
+    }
 
     public static ALBSavedData get(Level level) {
         if (!(level instanceof ServerLevel sl)) return null;
         ServerLevel overworld = sl.getServer().getLevel(Level.OVERWORLD);
         if (overworld == null) return null;
         return overworld.getDataStorage().computeIfAbsent(ALBSavedData::load, ALBSavedData::new, "all_living_beings_data");
-    }
-
-    public ALBSavedData() {
     }
 
     public static ALBSavedData load(CompoundTag tag) {

@@ -6,12 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class GodConfigIO {
-    public record Values(boolean absoluteDefense, boolean absoluteAutonomy, boolean godPermissions,
-                         boolean godSuppression, boolean godAttack, boolean eternalTranscendence, int fixedAttackDamage,
-                         boolean buffsEnabled, int buffMode, List<String> positiveEffectIds,
-                         List<String> negativeEffectIds) {
-    }
-
     public static void write(FriendlyByteBuf buf,
                              boolean absoluteDefense,
                              boolean absoluteAutonomy,
@@ -57,5 +51,11 @@ public final class GodConfigIO {
         for (int i = 0; i < nSize; i++) neg.add(buf.readUtf());
         return new Values(absoluteDefense, absoluteAutonomy, godPermissions, godSuppression, godAttack,
                 eternalTranscendence, fixedAttackDamage, buffsEnabled, buffMode, pos, neg);
+    }
+
+    public record Values(boolean absoluteDefense, boolean absoluteAutonomy, boolean godPermissions,
+                         boolean godSuppression, boolean godAttack, boolean eternalTranscendence, int fixedAttackDamage,
+                         boolean buffsEnabled, int buffMode, List<String> positiveEffectIds,
+                         List<String> negativeEffectIds) {
     }
 }

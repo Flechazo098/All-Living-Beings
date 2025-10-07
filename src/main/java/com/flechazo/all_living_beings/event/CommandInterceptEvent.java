@@ -22,12 +22,12 @@ public class CommandInterceptEvent extends Event {
         return command;
     }
 
-    public void setCanceled(boolean canceled) {
-        this.canceled = canceled;
-    }
-
     public boolean isCanceled() {
         return canceled;
+    }
+
+    public void setCanceled(boolean canceled) {
+        this.canceled = canceled;
     }
 
     public static class GiveCommandEvent extends CommandInterceptEvent {
