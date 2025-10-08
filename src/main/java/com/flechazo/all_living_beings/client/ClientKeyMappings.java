@@ -15,14 +15,8 @@ public class ClientKeyMappings {
             GLFW.GLFW_KEY_G,
             "key.categories.all_living_beings");
 
-    public static final KeyMapping OPEN_CONFIG_GUI = new KeyMapping(
-            "key.all_living_beings.open_config",
-            GLFW.GLFW_KEY_H,
-            "key.categories.all_living_beings");
-
     @SubscribeEvent
     public static void registerKeys(RegisterKeyMappingsEvent e) {
         e.register(OPEN_THRONE_GUI);
-        e.register(OPEN_CONFIG_GUI);
     }
 }

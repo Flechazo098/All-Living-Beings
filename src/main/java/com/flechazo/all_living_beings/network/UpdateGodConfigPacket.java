@@ -22,6 +22,9 @@ public class UpdateGodConfigPacket {
     private final int buffMode;
     private final List<String> positiveEffectIds;
     private final List<String> negativeEffectIds;
+    private final int mobAttitude;
+    private final double stepAssistHeight;
+    private final List<String> bossEntityTypeIds;
 
     public UpdateGodConfigPacket(boolean absoluteDefense,
                                  boolean absoluteAutonomy,
@@ -33,7 +36,10 @@ public class UpdateGodConfigPacket {
                                  boolean buffsEnabled,
                                  int buffMode,
                                  List<String> positiveEffectIds,
-                                 List<String> negativeEffectIds) {
+                                 List<String> negativeEffectIds,
+                                 int mobAttitude,
+                                 double stepAssistHeight,
+                                 List<String> bossEntityTypeIds) {
         this.absoluteDefense = absoluteDefense;
         this.absoluteAutonomy = absoluteAutonomy;
         this.godPermissions = godPermissions;
@@ -45,6 +51,9 @@ public class UpdateGodConfigPacket {
         this.buffMode = buffMode;
         this.positiveEffectIds = positiveEffectIds;
         this.negativeEffectIds = negativeEffectIds;
+        this.mobAttitude = mobAttitude;
+        this.stepAssistHeight = stepAssistHeight;
+        this.bossEntityTypeIds = bossEntityTypeIds;
     }
 
     public static void encode(UpdateGodConfigPacket pkt, FriendlyByteBuf buf) {
@@ -59,13 +68,17 @@ public class UpdateGodConfigPacket {
                 pkt.buffsEnabled,
                 pkt.buffMode,
                 pkt.positiveEffectIds,
-                pkt.negativeEffectIds);
+                pkt.negativeEffectIds,
+                pkt.mobAttitude,
+                pkt.stepAssistHeight,
+                pkt.bossEntityTypeIds);
     }
 
     public static UpdateGodConfigPacket decode(FriendlyByteBuf buf) {
         GodConfigIO.Values v = GodConfigIO.read(buf);
         return new UpdateGodConfigPacket(v.absoluteDefense(), v.absoluteAutonomy(), v.godPermissions(), v.godSuppression(), v.godAttack(),
-                v.eternalTranscendence(), v.fixedAttackDamage(), v.buffsEnabled(), v.buffMode(), v.positiveEffectIds(), v.negativeEffectIds());
+                v.eternalTranscendence(), v.fixedAttackDamage(), v.buffsEnabled(), v.buffMode(), v.positiveEffectIds(), v.negativeEffectIds(),
+                v.mobAttitude(), v.stepAssistHeight(), v.bossEntityTypeIds());
     }
 
     public static void handle(UpdateGodConfigPacket pkt, Supplier<NetworkEvent.Context> ctxSupplier) {
@@ -86,6 +99,9 @@ public class UpdateGodConfigPacket {
             Config.COMMON.buffMode.set(pkt.buffMode);
             Config.COMMON.positiveEffectIds.set(pkt.positiveEffectIds);
             Config.COMMON.negativeEffectIds.set(pkt.negativeEffectIds);
+            Config.COMMON.mobAttitude.set(pkt.mobAttitude);
+            Config.COMMON.stepAssistHeight.set(pkt.stepAssistHeight);
+            Config.COMMON.bossEntityTypeIds.set(pkt.bossEntityTypeIds);
         });
         ctx.setPacketHandled(true);
     }

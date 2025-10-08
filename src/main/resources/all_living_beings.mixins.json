@@ -7,6 +7,7 @@
   "mixins": [
     "ClearInventoryCommandsMixin",
     "CuriosCommandMixin",
+    "CPacketDestroyMixin",
     "GiveCommandMixin",
     "InventoryMenuMixin",
     "LivingEntityMixin",
@@ -16,6 +17,7 @@
     "UtilsMixin"
   ],
   "client": [
+    "MultiPlayerGameModeMixin"
   ],
   "injectors": {
     "defaultRequire": 1

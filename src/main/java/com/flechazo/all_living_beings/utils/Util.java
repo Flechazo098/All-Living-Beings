@@ -6,6 +6,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.PlayerTeam;
@@ -15,6 +16,9 @@ import java.util.UUID;
 public class Util {
     public static final String EMPEROR_TEAM = "sky_emperor_title";
     public static final UUID CAST_TIME_MODIFIER_UUID = UUID.fromString("f2c8f6c7-6a6c-4f1e-93e6-0a0403f6b2d9");
+    public static final UUID ENTITY_REACH_MODIFIER_UUID = UUID.fromString("e1b7a6b0-5f7d-4a65-9d3c-6a5b9b0f2a11");
+    public static final UUID BLOCK_REACH_MODIFIER_UUID = UUID.fromString("a5c9f3e2-4d81-4e2c-9e39-19d6f93b7c3f");
+    public static final UUID STEP_HEIGHT_MODIFIER_UUID = UUID.fromString("b3f1c8d2-8e44-4b7f-9a9f-02c4c1a9e6d2");
 
 
     public static boolean isOwnerActive(ServerPlayer p) {
@@ -50,9 +54,14 @@ public class Util {
         EmperorBuffUtils.updateFlightAbilities(sp, isOwner);
     }
 
-    public static void applyCastTimeReductionAttribute(ServerPlayer sp, boolean isOwner) {
-        EmperorBuffUtils.applyCastTimeReductionAttribute(sp, isOwner);
+    public static void applyISSCastTimeReductionAttribute(ServerPlayer sp, boolean isOwner) {
+        EmperorBuffUtils.applyISSCastTimeReductionAttribute(sp, isOwner);
     }
+
+    public static void applyBOTInfinityManager(ServerPlayer sp, boolean isOwner) {
+        EmperorBuffUtils.applyBOTInfinityMana(sp, isOwner);
+    }
+
 
     public static void handleGodSuppression(ServerPlayer sp, boolean isOwner) {
         if (isOwner && Config.COMMON.godSuppression.get()) {
@@ -74,6 +83,17 @@ public class Util {
         }
     }
 
+    public static void applyReachAndMiningDistance(ServerPlayer sp, boolean isOwner) {
+        EmperorBuffUtils.applyReachAndMiningDistance(sp, isOwner);
+    }
+
+    public static void applyStepAssistWhenSprinting(ServerPlayer sp, boolean isOwner) {
+        EmperorBuffUtils.applyStepAssistWhenSprinting(sp, isOwner);
+    }
+
+    public static boolean shouldPreventTargeting(Mob mob, LivingEntity target) {
+        return EmperorBuffUtils.shouldPreventTargeting(mob, target);
+    }
     public static LivingEntity findTarget(ServerPlayer p, double range) {
         Vec3 eye = p.getEyePosition();
         Vec3 dir = p.getViewVector(1.0F);

@@ -1,8 +1,7 @@
-package com.flechazo.all_living_beings.registry;
+package com.flechazo.all_living_beings.network;
 
 import com.flechazo.all_living_beings.AllLivingBeings;
 import com.flechazo.all_living_beings.config.Config;
-import com.flechazo.all_living_beings.network.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;
@@ -87,7 +86,10 @@ public class NetworkHandler {
                 Config.COMMON.buffsEnabled.get(),
                 Config.COMMON.buffMode.get(),
                 List.copyOf(Config.COMMON.positiveEffectIds.get()),
-                List.copyOf(Config.COMMON.negativeEffectIds.get())
+                List.copyOf(Config.COMMON.negativeEffectIds.get()),
+                Config.COMMON.mobAttitude.get(),
+                Config.COMMON.stepAssistHeight.get(),
+                List.copyOf(Config.COMMON.bossEntityTypeIds.get())
         ));
     }
 
@@ -101,7 +103,10 @@ public class NetworkHandler {
                                        boolean buffsEnabled,
                                        int buffMode,
                                        List<String> positiveEffectIds,
-                                       List<String> negativeEffectIds) {
+                                       List<String> negativeEffectIds,
+                                       int mobAttitude,
+                                       double stepAssistHeight,
+                                       List<String> bossEntityTypeIds) {
         CHANNEL.sendToServer(new UpdateGodConfigPacket(
                 absoluteDefense,
                 absoluteAutonomy,
@@ -113,7 +118,10 @@ public class NetworkHandler {
                 buffsEnabled,
                 buffMode,
                 positiveEffectIds,
-                negativeEffectIds
+                negativeEffectIds,
+                mobAttitude,
+                stepAssistHeight,
+                bossEntityTypeIds
         ));
     }
 }

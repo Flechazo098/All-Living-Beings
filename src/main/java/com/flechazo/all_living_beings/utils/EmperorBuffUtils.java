@@ -8,12 +8,16 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.scores.PlayerTeam;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.registries.ForgeRegistries;
 import top.theillusivec4.curios.api.CuriosApi;
+import vazkii.botania.api.mana.ManaItem;
+import vazkii.botania.xplat.XplatAbstractions;
 
 import java.util.function.Consumer;
 
@@ -31,7 +35,7 @@ public class EmperorBuffUtils {
         sp.onUpdateAbilities();
     }
 
-    public static void applyCastTimeReductionAttribute(ServerPlayer sp, boolean isOwner) {
+    public static void applyISSCastTimeReductionAttribute(ServerPlayer sp, boolean isOwner) {
         Attribute attr = ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation("irons_spellbooks", "cast_time_reduction"));
         if (attr == null) return;
         var inst = sp.getAttribute(attr);
@@ -55,6 +59,22 @@ public class EmperorBuffUtils {
         } else {
             if (existing != null) {
                 inst.removeModifier(Util.CAST_TIME_MODIFIER_UUID);
+            }
+        }
+    }
+
+    public static void applyBOTInfinityMana(ServerPlayer sp, boolean isOwner) {
+        if (!isOwner) return;
+
+        PlayerInventoryUtils.forEachPlayerStack(sp, EmperorBuffUtils::chargeStack);
+    }
+
+    private static void chargeStack(ItemStack st) {
+        ManaItem mana = XplatAbstractions.INSTANCE.findManaItem(st);
+        if (mana != null) {
+            int missing = Math.max(0, mana.getMaxMana() - mana.getMana());
+            if (missing > 0) {
+                mana.addMana(missing);
             }
         }
     }
@@ -145,4 +165,76 @@ public class EmperorBuffUtils {
             target.spawnAtLocation(st);
         }
     }
+
+    public static void applyReachAndMiningDistance(ServerPlayer sp, boolean isOwner) {
+        if (!isOwner || !Util.hasThrone(sp)) {
+            Attribute atk = ForgeMod.ENTITY_REACH.get();
+            Attribute br = ForgeMod.BLOCK_REACH.get();
+            var atkInst = sp.getAttribute(atk);
+            var brInst = sp.getAttribute(br);
+            if (atkInst != null && atkInst.getModifier(Util.ENTITY_REACH_MODIFIER_UUID) != null) {
+                atkInst.removeModifier(Util.ENTITY_REACH_MODIFIER_UUID);
+            }
+            if (brInst != null && brInst.getModifier(Util.BLOCK_REACH_MODIFIER_UUID) != null) {
+                brInst.removeModifier(Util.BLOCK_REACH_MODIFIER_UUID);
+            }
+            return;
+        }
+        Attribute atk = ForgeMod.ENTITY_REACH.get();
+        Attribute br = ForgeMod.BLOCK_REACH.get();
+        var atkInst = sp.getAttribute(atk);
+        var brInst = sp.getAttribute(br);
+        if (atkInst != null) {
+            var existing = atkInst.getModifier(Util.ENTITY_REACH_MODIFIER_UUID);
+            var mod = new AttributeModifier(Util.ENTITY_REACH_MODIFIER_UUID, "alb_emperor_attack_range", 64.0, AttributeModifier.Operation.ADDITION);
+            if (existing == null) atkInst.addTransientModifier(mod); else if (existing.getAmount() != 64.0 || existing.getOperation() != AttributeModifier.Operation.ADDITION) {
+                atkInst.removeModifier(Util.ENTITY_REACH_MODIFIER_UUID);
+                atkInst.addTransientModifier(mod);
+            }
+        }
+        if (brInst != null) {
+            var existing = brInst.getModifier(Util.BLOCK_REACH_MODIFIER_UUID);
+            var mod = new AttributeModifier(Util.BLOCK_REACH_MODIFIER_UUID, "alb_emperor_block_reach", 64.0, AttributeModifier.Operation.ADDITION);
+            if (existing == null) brInst.addTransientModifier(mod); else if (existing.getAmount() != 64.0 || existing.getOperation() != AttributeModifier.Operation.ADDITION) {
+                brInst.removeModifier(Util.BLOCK_REACH_MODIFIER_UUID);
+                brInst.addTransientModifier(mod);
+            }
+        }
+    }
+
+    public static void applyStepAssistWhenSprinting(ServerPlayer sp, boolean isOwner) {
+        Attribute step = ForgeMod.STEP_HEIGHT_ADDITION.get();
+        var inst = sp.getAttribute(step);
+        if (inst == null) return;
+        double v = Config.COMMON.stepAssistHeight.get();
+        if (isOwner && Util.hasThrone(sp) && sp.isSprinting() && v > 0.0) {
+            var existing = inst.getModifier(Util.STEP_HEIGHT_MODIFIER_UUID);
+            var mod = new AttributeModifier(Util.STEP_HEIGHT_MODIFIER_UUID, "alb_emperor_step_height", v, AttributeModifier.Operation.ADDITION);
+            if (existing == null) inst.addTransientModifier(mod); else if (existing.getAmount() != v || existing.getOperation() != AttributeModifier.Operation.ADDITION) {
+                inst.removeModifier(Util.STEP_HEIGHT_MODIFIER_UUID);
+                inst.addTransientModifier(mod);
+            }
+        } else {
+            if (inst.getModifier(Util.STEP_HEIGHT_MODIFIER_UUID) != null) inst.removeModifier(Util.STEP_HEIGHT_MODIFIER_UUID);
+        }
+    }
+
+    public static boolean shouldPreventTargeting(Mob mob, LivingEntity target) {
+        if (!(target instanceof ServerPlayer sp)) return false;
+        if (!Util.isOwnerActive(sp)) return false;
+
+        int mode = Config.COMMON.mobAttitude.get();
+        if (mode == 1) return false; // mode 1: 允许攻击，无需阻止
+
+        var typeId = ForgeRegistries.ENTITY_TYPES.getKey(mob.getType());
+        boolean isBoss = typeId != null && Config.COMMON.bossEntityTypeIds.get().contains(typeId.toString());
+
+        return switch (mode) {
+            case 0 -> isBoss;           // 只阻止 Boss
+            case 2 -> !isBoss;          // 只阻止非 Boss
+            case 3 -> true;             // 总是阻止
+            default -> false;
+        };
+    }
+
 }

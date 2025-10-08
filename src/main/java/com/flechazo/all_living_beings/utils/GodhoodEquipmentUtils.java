@@ -11,6 +11,7 @@ import top.theillusivec4.curios.api.CuriosApi;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class GodhoodEquipmentUtils {
     public static boolean hasThrone(ServerPlayer player) {
@@ -87,7 +88,6 @@ public class GodhoodEquipmentUtils {
     public static PurgeResult purgeFateStacks(ServerPlayer player) {
         ALBSavedData data = ALBSavedData.get(player.level());
         UUID owner = data != null ? data.getOwner() : null;
-
         if (owner == null) {
             return PurgeResult.NONE;
         }
@@ -95,22 +95,18 @@ public class GodhoodEquipmentUtils {
         AtomicBoolean removed = new AtomicBoolean(false);
         boolean isOwner = owner.equals(player.getUUID());
 
-        CuriosApi.getCuriosInventory(player).ifPresent(curiosHandler -> {
-            curiosHandler.getStacksHandler("godhood").ifPresent(slotHandler -> {
-                IItemHandlerModifiable inv = slotHandler.getStacks();
-                int count = 0;
-                for (int i = 0; i < inv.getSlots(); i++) {
-                    ItemStack stack = inv.getStackInSlot(i);
-                    if (stack.is(ModItems.HEAVENLY_THRONE.get())) {
-                        if (isOwner && count == 0) {
-                            count++;
-                            continue;
-                        }
-                        inv.setStackInSlot(i, ItemStack.EMPTY);
-                        removed.set(true);
-                    }
+        AtomicInteger count = new AtomicInteger(0);
+
+        PlayerInventoryUtils.forEachCuriosSlot(player, "godhood", (inv, i) -> {
+            ItemStack stack = inv.getStackInSlot(i);
+            if (stack.is(ModItems.HEAVENLY_THRONE.get())) {
+                if (isOwner && count.get() == 0) {
+                    count.incrementAndGet();
+                    return;
                 }
-            });
+                inv.setStackInSlot(i, ItemStack.EMPTY);
+                removed.set(true);
+            }
         });
 
         clearInventoryStacks(player.getInventory().items, ModItems.HEAVENLY_THRONE.get(), removed);

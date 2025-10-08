@@ -1,6 +1,5 @@
 package com.flechazo.all_living_beings.network;
 
-import com.flechazo.all_living_beings.registry.NetworkHandler;
 import com.flechazo.all_living_beings.utils.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;

@@ -30,6 +30,9 @@ public class Config {
         public final ForgeConfigSpec.IntValue buffMode;
         public final ForgeConfigSpec.ConfigValue<List<? extends String>> positiveEffectIds;
         public final ForgeConfigSpec.ConfigValue<List<? extends String>> negativeEffectIds;
+        public final ForgeConfigSpec.IntValue mobAttitude;
+        public final ForgeConfigSpec.DoubleValue stepAssistHeight;
+        public final ForgeConfigSpec.ConfigValue<List<? extends String>> bossEntityTypeIds;
 
         public Common(ForgeConfigSpec.Builder b) {
             b.push("all_living_beings");
@@ -58,6 +61,13 @@ public class Config {
                     List.of(
                             "minecraft:glowing"
                     ), o -> o instanceof String);
+            // 新增：生物态度与奔跑台阶高度
+            mobAttitude = b.defineInRange("mobAttitude", 0, 0, 3);
+            stepAssistHeight = b.defineInRange("stepAssistHeight", 3.0, 0.0, 10.0);
+            // 新增：Boss 实体列表（默认原版三种）
+            bossEntityTypeIds = b.defineList("bossEntityTypeIds",
+                    List.of("minecraft:ender_dragon", "minecraft:wither", "minecraft:warden"),
+                    o -> o instanceof String);
         }
     }
 

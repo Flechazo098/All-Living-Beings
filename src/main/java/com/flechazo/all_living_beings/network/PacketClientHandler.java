@@ -26,20 +26,21 @@ public class PacketClientHandler {
 
     public static void handleOpenGodConfig(OpenGodConfigPacket pkt, Supplier<NetworkEvent.Context> ctxSupplier) {
         NetworkEvent.Context ctx = ctxSupplier.get();
-        ctx.enqueueWork(() -> {
-            Minecraft.getInstance().setScreen(new GodConfigScreen(
-                    pkt.absoluteDefense(),
-                    pkt.absoluteAutonomy(),
-                    pkt.godPermissions(),
-                    pkt.godSuppression(),
-                    pkt.godAttack(),
-                    pkt.eternalTranscendence(),
-                    pkt.fixedAttackDamage(),
-                    pkt.buffsEnabled(),
-                    pkt.buffMode(),
-                    pkt.positiveEffectIds(),
-                    pkt.negativeEffectIds()
-            ));
-        });
+        ctx.enqueueWork(() -> Minecraft.getInstance().setScreen(new GodConfigScreen(
+                pkt.absoluteDefense(),
+                pkt.absoluteAutonomy(),
+                pkt.godPermissions(),
+                pkt.godSuppression(),
+                pkt.godAttack(),
+                pkt.eternalTranscendence(),
+                pkt.fixedAttackDamage(),
+                pkt.buffsEnabled(),
+                pkt.buffMode(),
+                pkt.positiveEffectIds(),
+                pkt.negativeEffectIds(),
+                pkt.mobAttitude(),
+                pkt.stepAssistHeight(),
+                pkt.bossEntityTypeIds()
+        )));
     }
 }

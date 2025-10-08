@@ -198,16 +198,24 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
     // Compile against only the API artifact
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
-    // Use the full Curios API jar at runtime
+    implementation fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
+
     implementation fg.deobf("libs:irons_spellbooks-1.20.1:3.4.0.11")
     implementation fg.deobf("libs:TextAnimator:1.20.1-Forge-2.4.0")
-    implementation fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
     implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
     implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:${project.player_anim}")
     implementation fg.deobf("top.theillusivec4.caelus:caelus-forge:${caelus_version}")
+
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+
+    compileOnly fg.deobf("vazkii.botania:Botania:${bot_version}:api")
+    implementation fg.deobf("vazkii.botania:Botania:${bot_version}")
+
+    compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
+    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
+
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
 }

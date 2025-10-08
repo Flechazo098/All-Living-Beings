@@ -10,7 +10,9 @@ import java.util.function.Supplier;
 public record OpenGodConfigPacket(boolean absoluteDefense, boolean absoluteAutonomy, boolean godPermissions,
                                   boolean godSuppression, boolean godAttack, boolean eternalTranscendence,
                                   int fixedAttackDamage, boolean buffsEnabled, int buffMode,
-                                  List<String> positiveEffectIds, List<String> negativeEffectIds) {
+                                  List<String> positiveEffectIds, List<String> negativeEffectIds,
+                                  int mobAttitude, double stepAssistHeight,
+                                  List<String> bossEntityTypeIds) {
 
     public static void encode(OpenGodConfigPacket pkt, FriendlyByteBuf buf) {
         GodConfigIO.write(buf,
@@ -24,13 +26,17 @@ public record OpenGodConfigPacket(boolean absoluteDefense, boolean absoluteAuton
                 pkt.buffsEnabled,
                 pkt.buffMode,
                 pkt.positiveEffectIds,
-                pkt.negativeEffectIds);
+                pkt.negativeEffectIds,
+                pkt.mobAttitude,
+                pkt.stepAssistHeight,
+                pkt.bossEntityTypeIds);
     }
 
     public static OpenGodConfigPacket decode(FriendlyByteBuf buf) {
         var v = GodConfigIO.read(buf);
         return new OpenGodConfigPacket(v.absoluteDefense(), v.absoluteAutonomy(), v.godPermissions(), v.godSuppression(), v.godAttack(),
-                v.eternalTranscendence(), v.fixedAttackDamage(), v.buffsEnabled(), v.buffMode(), v.positiveEffectIds(), v.negativeEffectIds());
+                v.eternalTranscendence(), v.fixedAttackDamage(), v.buffsEnabled(), v.buffMode(), v.positiveEffectIds(), v.negativeEffectIds(),
+                v.mobAttitude(), v.stepAssistHeight(), v.bossEntityTypeIds());
     }
 
     public static void handle(OpenGodConfigPacket pkt, Supplier<NetworkEvent.Context> ctxSupplier) {

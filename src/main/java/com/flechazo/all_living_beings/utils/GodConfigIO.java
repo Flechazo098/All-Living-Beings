@@ -17,7 +17,10 @@ public final class GodConfigIO {
                              boolean buffsEnabled,
                              int buffMode,
                              List<String> positiveEffectIds,
-                             List<String> negativeEffectIds) {
+                             List<String> negativeEffectIds,
+                             int mobAttitude,
+                             double stepAssistHeight,
+                             List<String> bossEntityTypeIds) {
         buf.writeBoolean(absoluteDefense);
         buf.writeBoolean(absoluteAutonomy);
         buf.writeBoolean(godPermissions);
@@ -31,6 +34,10 @@ public final class GodConfigIO {
         for (var s : positiveEffectIds) buf.writeUtf(s);
         buf.writeVarInt(negativeEffectIds.size());
         for (var s : negativeEffectIds) buf.writeUtf(s);
+        buf.writeVarInt(mobAttitude);
+        buf.writeDouble(stepAssistHeight);
+        buf.writeVarInt(bossEntityTypeIds.size());
+        for (var s : bossEntityTypeIds) buf.writeUtf(s);
     }
 
     public static Values read(FriendlyByteBuf buf) {
@@ -49,13 +56,19 @@ public final class GodConfigIO {
         int nSize = buf.readVarInt();
         List<String> neg = new ArrayList<>(nSize);
         for (int i = 0; i < nSize; i++) neg.add(buf.readUtf());
+        int mobAttitude = buf.readVarInt();
+        double stepAssistHeight = buf.readDouble();
+        int bSize = buf.readVarInt();
+        List<String> bossList = new ArrayList<>(bSize);
+        for (int i = 0; i < bSize; i++) bossList.add(buf.readUtf());
         return new Values(absoluteDefense, absoluteAutonomy, godPermissions, godSuppression, godAttack,
-                eternalTranscendence, fixedAttackDamage, buffsEnabled, buffMode, pos, neg);
+                eternalTranscendence, fixedAttackDamage, buffsEnabled, buffMode, pos, neg, mobAttitude, stepAssistHeight, bossList);
     }
 
     public record Values(boolean absoluteDefense, boolean absoluteAutonomy, boolean godPermissions,
                          boolean godSuppression, boolean godAttack, boolean eternalTranscendence, int fixedAttackDamage,
                          boolean buffsEnabled, int buffMode, List<String> positiveEffectIds,
-                         List<String> negativeEffectIds) {
+                         List<String> negativeEffectIds, int mobAttitude, double stepAssistHeight,
+                         List<String> bossEntityTypeIds) {
     }
 }

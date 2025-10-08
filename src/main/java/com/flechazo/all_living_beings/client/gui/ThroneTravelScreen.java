@@ -1,7 +1,7 @@
 package com.flechazo.all_living_beings.client.gui;
 
 import com.flechazo.all_living_beings.client.ClientCache;
-import com.flechazo.all_living_beings.registry.NetworkHandler;
+import com.flechazo.all_living_beings.network.NetworkHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -25,10 +25,12 @@ public class ThroneTravelScreen extends Screen {
         int bh = 20;
         int x = (w - (bindW + mainW + sideW)) / 2;
         int y = 40;
+
+        var mc = Minecraft.getInstance();
+        var currentDim = mc.level != null ? mc.level.dimension().location() : null;
         List<ResourceLocation> dims = new ArrayList<>(ClientCache.DIMENSIONS);
         if (dims.isEmpty()) {
-            addRenderableWidget(Button.builder(Component.translatable("message.all_living_beings.travel_loading"), b -> {
-                    })
+            addRenderableWidget(Button.builder(Component.translatable("message.all_living_beings.travel_loading"), b -> {})
                     .bounds(x, y, mainW, bh).build());
             return;
         }
@@ -37,9 +39,11 @@ public class ThroneTravelScreen extends Screen {
             int by = y + i * (bh + 4);
             String key = "dimension." + id.getNamespace() + "." + id.getPath();
 
-            addRenderableWidget(Button.builder(Component.translatable("gui.all_living_beings.bind"), b -> {
+            Button bindBtn = Button.builder(Component.translatable("gui.all_living_beings.bind"), b -> {
                 NetworkHandler.sendBindTeleport(id);
-            }).bounds(x, by, bindW, bh).build());
+            }).bounds(x, by, bindW, bh).build();
+            bindBtn.active = (id.equals(currentDim));
+            addRenderableWidget(bindBtn);
 
             addRenderableWidget(Button.builder(Component.translatable(key), b -> {
                 NetworkHandler.sendTeleportRequest(id, 0);

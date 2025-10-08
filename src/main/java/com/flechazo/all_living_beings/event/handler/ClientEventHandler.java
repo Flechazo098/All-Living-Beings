@@ -2,7 +2,7 @@ package com.flechazo.all_living_beings.event.handler;
 
 import com.flechazo.all_living_beings.AllLivingBeings;
 import com.flechazo.all_living_beings.client.ClientKeyMappings;
-import com.flechazo.all_living_beings.registry.NetworkHandler;
+import com.flechazo.all_living_beings.client.gui.MainMenuScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
@@ -18,11 +18,7 @@ public class ClientEventHandler {
         if (mc.player == null) return;
 
         while (ClientKeyMappings.OPEN_THRONE_GUI.consumeClick()) {
-            NetworkHandler.requestDimensions();
-        }
-
-        while (ClientKeyMappings.OPEN_CONFIG_GUI.consumeClick()) {
-            NetworkHandler.requestGodConfig();
+            mc.setScreen(new MainMenuScreen());
         }
     }
 }

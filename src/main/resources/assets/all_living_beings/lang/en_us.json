@@ -38,6 +38,10 @@
   "gui.all_living_beings.apply": "Apply",
   "gui.all_living_beings.manage_positive_effects": "Manage Positive Effects (%s)",
   "gui.all_living_beings.manage_negative_effects": "Manage Negative Effects (%s)",
+  "gui.all_living_beings.manage_boss_entities": "Manage Boss Entities (%s)",
+  "gui.all_living_beings.select_boss_entities": "Select Boss Entities",
+  "gui.all_living_beings.search_entities": "Search entities...",
+  "gui.all_living_beings.confirm": "Confirm",
   "gui.all_living_beings.clear_positive_effects": "Clear Positive Effects",
   "gui.all_living_beings.clear_negative_effects": "Clear Negative Effects",
 
@@ -106,5 +110,20 @@
   "tooltip.all_living_beings.fate.mechanics.suppress": "Gaze suppresses target's equips and curios.",
   "tooltip.all_living_beings.fate.hint_shift": "Hold Shift to view mechanics.",
   "tooltip.all_living_beings.fate.hint_alt": "Hold Alt to view debug.",
-  "tooltip.all_living_beings.fate.open_gui": "Press %s to open travel."
+  "tooltip.all_living_beings.fate.open_gui": "Press %s to open travel.",
+  "gui.all_living_beings.main_menu.title": "Heavenly Throne",
+  "gui.all_living_beings.menu.travel": "Teleport",
+  "gui.all_living_beings.menu.config": "Config Screen",
+  "message.all_living_beings.bind_success": "§aBound %s at §f(%s, %s, %s)",
+  "cfg.all_living_beings.mobAttitude": "Mob Attitude",
+  "cfg.all_living_beings.mobAttitude.0": "Boss-only Friendly",
+  "cfg.all_living_beings.mobAttitude.1": "All Hostile",
+  "cfg.all_living_beings.mobAttitude.2": "Friendly Except Boss",
+  "cfg.all_living_beings.mobAttitude.3": "All Friendly",
+  "cfg.all_living_beings.mobAttitude.desc.0": "If entity is Boss → do not attack",
+  "cfg.all_living_beings.mobAttitude.desc.1": "No blocking",
+  "cfg.all_living_beings.mobAttitude.desc.2": "If not Boss → do not attack",
+  "cfg.all_living_beings.mobAttitude.desc.3": "Unconditionally block attacks",
+  "cfg.all_living_beings.stepAssistHeight": "Step Height While Sprinting: %s",
+  "cfg.all_living_beings.stepAssistHeight.input": "Step Height While Sprinting"
 }
