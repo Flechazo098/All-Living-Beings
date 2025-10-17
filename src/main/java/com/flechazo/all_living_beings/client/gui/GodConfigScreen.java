@@ -75,7 +75,6 @@ public class GodConfigScreen extends Screen {
         int buttonHeight = 20;
         int spacing = 25;
 
-// 分页导航按钮
         addRenderableWidget(Button.builder(Component.translatable("gui.all_living_beings.previous_page"),
                         b -> {
                             currentPage = (currentPage - 1 + TOTAL_PAGES) % TOTAL_PAGES;
@@ -90,11 +89,9 @@ public class GodConfigScreen extends Screen {
                         })
                 .bounds(centerX + 90, this.height - 70, 60, buttonHeight).build());
 
-// 关闭按钮
         addRenderableWidget(Button.builder(Component.translatable("gui.done"), b -> onClose())
                 .bounds(centerX - 50, this.height - 70, 100, buttonHeight).build());
 
-        // 根据当前页面显示不同内容
         switch (currentPage) {
             case 0:
                 initBasicAbilitiesPage(centerX, buttonWidth, buttonHeight, spacing);
@@ -165,13 +162,11 @@ public class GodConfigScreen extends Screen {
                         }));
     }
 
-    // method: initNumericSettingsPage
     private void initNumericSettingsPage(int centerX, int buttonWidth, int buttonHeight, int spacing) {
-        int currentY = 60; // 从 80 上调到 60，让整页更靠上
+        int currentY = 60;
         int applyButtonWidth = 55;
-        int inputWidth = buttonWidth - applyButtonWidth - 10; // 行内：输入框 + 10px 间距 + 应用按钮 = buttonWidth
-    
-        // 固定攻击伤害输入框（与下方控件左侧对齐）
+        int inputWidth = buttonWidth - applyButtonWidth - 10;
+
         damageInput = new EditBox(this.font, centerX - buttonWidth / 2, currentY, inputWidth, buttonHeight,
                 Component.translatable("cfg.all_living_beings.fixedAttackDamage.input"));
         damageInput.setValue(String.valueOf(fixedAttackDamage));
@@ -182,15 +177,13 @@ public class GodConfigScreen extends Screen {
             } catch (NumberFormatException ignored) {}
         });
         addRenderableWidget(damageInput);
-    
-        // 应用按钮（紧贴输入框右侧，行宽总计与下面控件一致）
+
         addRenderableWidget(Button.builder(Component.translatable("gui.all_living_beings.apply"), b -> push())
                 .bounds(centerX - buttonWidth / 2 + inputWidth + 10, currentY, applyButtonWidth, buttonHeight)
                 .build());
     
         currentY += spacing;
-    
-        // 增益模式选择
+
         addRenderableWidget(CycleButton.builder((Integer v) -> Component.translatable("cfg.all_living_beings.buffMode." + v))
                 .withValues(Arrays.asList(0, 1, 2, 3))
                 .withInitialValue(buffMode)
@@ -202,8 +195,7 @@ public class GodConfigScreen extends Screen {
                         }));
     
         currentY += spacing;
-    
-        // 是否启用增益
+
         addRenderableWidget(CycleButton.onOffBuilder(buffsEnabled)
                 .create(centerX - buttonWidth / 2, currentY, buttonWidth, buttonHeight,
                         Component.translatable("cfg.all_living_beings.buffsEnabled"),
@@ -213,8 +205,7 @@ public class GodConfigScreen extends Screen {
                         }));
     
         currentY += spacing;
-    
-        // 生物选择按钮
+
         addRenderableWidget(Button.builder(
                         Component.translatable("gui.all_living_beings.manage_boss_entities", bossEntityTypeIds.size()),
                         b -> Minecraft.getInstance().setScreen(
@@ -223,8 +214,7 @@ public class GodConfigScreen extends Screen {
                 .build());
     
         currentY += spacing;
-    
-        // 生物态度模式
+
         addRenderableWidget(CycleButton.builder((Integer v) -> Component.translatable("cfg.all_living_beings.mobAttitude." + v))
                 .withValues(Arrays.asList(0, 1, 2, 3))
                 .withInitialValue(mobAttitude)
@@ -236,8 +226,7 @@ public class GodConfigScreen extends Screen {
                         }));
     
         currentY += spacing;
-    
-        // 台阶高度输入框
+
         stepInput = new EditBox(this.font, centerX - buttonWidth / 2, currentY, inputWidth, buttonHeight,
                 Component.translatable("cfg.all_living_beings.stepAssistHeight.input"));
         stepInput.setValue(String.valueOf(stepAssistHeight));
@@ -248,46 +237,37 @@ public class GodConfigScreen extends Screen {
             } catch (NumberFormatException ignored) {}
         });
         addRenderableWidget(stepInput);
-    
-        // 应用按钮（右侧对齐）
+
         addRenderableWidget(Button.builder(Component.translatable("gui.all_living_beings.apply"), b -> push())
                 .bounds(centerX - buttonWidth / 2 + inputWidth + 10, currentY, applyButtonWidth, buttonHeight)
                 .build());
-    
-        currentY += spacing;
-    
-        // 结束
-        currentY += spacing;
     }
 
     private void initEffectManagementPage(int centerX, int buttonWidth, int buttonHeight, int spacing) {
         int currentY = 80;
         int effectButtonWidth = (buttonWidth - 10) / 2;
 
-        // 正面效果管理
         addRenderableWidget(Button.builder(
                         Component.translatable("gui.all_living_beings.manage_positive_effects", positiveEffectIds.size()),
                         b -> Minecraft.getInstance().setScreen(new EffectPickerScreen(this, true, this::onPositiveEffectsPicked)))
                 .bounds(centerX - buttonWidth / 2, currentY, effectButtonWidth, buttonHeight).build());
 
-        // 负面效果管理  
         addRenderableWidget(Button.builder(
                         Component.translatable("gui.all_living_beings.manage_negative_effects", negativeEffectIds.size()),
                         b -> Minecraft.getInstance().setScreen(new EffectPickerScreen(this, false, this::onNegativeEffectsPicked)))
                 .bounds(centerX - buttonWidth / 2 + effectButtonWidth + 10, currentY, effectButtonWidth, buttonHeight).build());
         currentY += spacing;
 
-        // 清空按钮
         addRenderableWidget(Button.builder(Component.translatable("gui.all_living_beings.clear_positive_effects"), b -> {
             positiveEffectIds.clear();
             push();
-            init(); // 刷新界面
+            init();
         }).bounds(centerX - buttonWidth / 2, currentY, effectButtonWidth, buttonHeight).build());
 
         addRenderableWidget(Button.builder(Component.translatable("gui.all_living_beings.clear_negative_effects"), b -> {
             negativeEffectIds.clear();
             push();
-            init(); // 刷新界面
+            init();
         }).bounds(centerX - buttonWidth / 2 + effectButtonWidth + 10, currentY, effectButtonWidth, buttonHeight).build());
     }
 
@@ -295,14 +275,14 @@ public class GodConfigScreen extends Screen {
         positiveEffectIds.clear();
         effects.forEach(effect -> positiveEffectIds.add(effect.toString()));
         push();
-        init(); // 刷新界面以更新计数
+        init();
     }
 
     private void onNegativeEffectsPicked(List<ResourceLocation> effects) {
         negativeEffectIds.clear();
         effects.forEach(effect -> negativeEffectIds.add(effect.toString()));
         push();
-        init(); // 刷新界面以更新计数
+        init();
     }
 
     private void onBossEntitiesPicked(List<ResourceLocation> entities) {
@@ -319,7 +299,6 @@ public class GodConfigScreen extends Screen {
 
         int centerX = this.width / 2;
 
-        // 绘制页面标题
         String pageTitle = switch (currentPage) {
             case 0 -> Component.translatable("gui.all_living_beings.basic_abilities").getString();
             case 1 -> Component.translatable("gui.all_living_beings.numeric_settings").getString();
@@ -328,14 +307,12 @@ public class GodConfigScreen extends Screen {
         };
         graphics.drawCenteredString(this.font, pageTitle, centerX, 30, 0xFFFFFF);
 
-        // 绘制页面指示器
         String pageIndicator = Component.translatable("gui.all_living_beings.page_indicator",
                 currentPage + 1, TOTAL_PAGES).getString();
         graphics.drawCenteredString(this.font, pageIndicator, centerX, this.height - 70, 0xAAAAAA);
     }
 
     private void push() {
-        // 验证并应用伤害输入（仅在数值设置页面时）
         if (currentPage == 1 && damageInput != null) {
             try {
                 int value = Integer.parseInt(damageInput.getValue().trim());

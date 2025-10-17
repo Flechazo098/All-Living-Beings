@@ -1,4 +1,4 @@
-package com.flechazo.all_living_beings.mixin;
+package com.flechazo.all_living_beings.mixin.iss;
 
 import com.flechazo.all_living_beings.utils.Util;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.function.Predicate;
 
-@Mixin(value = Utils.class, remap = false)
+@Mixin(value = Utils.class)
 public class UtilsMixin {
 
     @Inject(

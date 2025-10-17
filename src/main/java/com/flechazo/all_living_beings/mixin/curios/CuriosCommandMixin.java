@@ -1,4 +1,4 @@
-package com.flechazo.all_living_beings.mixin;
+package com.flechazo.all_living_beings.mixin.curios;
 
 import com.flechazo.all_living_beings.event.CommandInterceptEvent;
 import net.minecraft.commands.CommandSourceStack;

@@ -1,5 +1,4 @@
-// CuriosDestroyMixin
-package com.flechazo.all_living_beings.mixin;
+package com.flechazo.all_living_beings.mixin.curios;
 
 import com.flechazo.all_living_beings.registry.ModItems;
 import com.google.common.collect.HashMultimap;
@@ -30,7 +29,7 @@ import java.util.function.Supplier;
  * 拦截curios自己的清理发包
  */
 @Mixin(value = CPacketDestroy.class, remap = false)
-public abstract class CPacketDestroyMixin {
+public class CPacketDestroyMixin {
 
     /**
      * 完全替换原 handle 方法，实现选择性清理 Curios 槽位

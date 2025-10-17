@@ -1,4 +1,4 @@
-package com.flechazo.all_living_beings.mixin;
+package com.flechazo.all_living_beings.mixin.iss;
 
 import com.flechazo.all_living_beings.utils.Util;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(value = TelekinesisSpell.class, remap = false)
+@Mixin(value = TelekinesisSpell.class)
 public class TelekinesisSpellMixin {
     @Inject(
             method = "checkPreCastConditions",
@@ -22,7 +22,8 @@ public class TelekinesisSpellMixin {
                     target = "Lio/redspace/ironsspellbooks/api/magic/MagicData;setAdditionalCastData(Lio/redspace/ironsspellbooks/api/spells/ICastData;)V",
                     shift = At.Shift.BEFORE
             ),
-            cancellable = true
+            cancellable = true,
+            remap = false
     )
     private void preventCastOnBoundOwner(
             Level level,

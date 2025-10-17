@@ -61,10 +61,8 @@ public class Config {
                     List.of(
                             "minecraft:glowing"
                     ), o -> o instanceof String);
-            // 新增：生物态度与奔跑台阶高度
             mobAttitude = b.defineInRange("mobAttitude", 0, 0, 3);
             stepAssistHeight = b.defineInRange("stepAssistHeight", 3.0, 0.0, 10.0);
-            // 新增：Boss 实体列表（默认原版三种）
             bossEntityTypeIds = b.defineList("bossEntityTypeIds",
                     List.of("minecraft:ender_dragon", "minecraft:wither", "minecraft:warden"),
                     o -> o instanceof String);

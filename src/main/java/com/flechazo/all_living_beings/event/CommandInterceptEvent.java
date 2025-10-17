@@ -4,7 +4,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.Event;
 
-public class CommandInterceptEvent extends Event {
+public abstract class CommandInterceptEvent extends Event {
     private final CommandSourceStack source;
     private final String command;
     private boolean canceled = false;

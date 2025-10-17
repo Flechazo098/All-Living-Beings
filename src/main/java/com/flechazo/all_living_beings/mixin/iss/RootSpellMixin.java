@@ -1,4 +1,4 @@
-package com.flechazo.all_living_beings.mixin;
+package com.flechazo.all_living_beings.mixin.iss;
 
 import com.flechazo.all_living_beings.utils.Util;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
@@ -14,9 +14,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = RootSpell.class, remap = false)
+@Mixin(value = RootSpell.class)
 public class RootSpellMixin {
-    @Inject(method = "onCast", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "onCast", at = @At("HEAD"), cancellable = true, remap = false)
     private void preventPlayerRoot(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData, CallbackInfo ci) {
         if (playerMagicData.getAdditionalCastData() instanceof TargetEntityCastData castData) {
             LivingEntity target = castData.getTarget((ServerLevel) level);

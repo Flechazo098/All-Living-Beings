@@ -6,15 +6,15 @@
   "refmap": "all_living_beings.refmap.json",
   "mixins": [
     "ClearInventoryCommandsMixin",
-    "CuriosCommandMixin",
-    "CPacketDestroyMixin",
+    "curios.CuriosCommandMixin",
+    "curios.CPacketDestroyMixin",
     "GiveCommandMixin",
     "InventoryMenuMixin",
     "LivingEntityMixin",
-    "RootSpellMixin",
-    "TelekinesisSpellMixin",
+    "iss.RootSpellMixin",
+    "iss.TelekinesisSpellMixin",
     "TeleportCommandMixin",
-    "UtilsMixin"
+    "iss.UtilsMixin"
   ],
   "client": [
     "MultiPlayerGameModeMixin"
