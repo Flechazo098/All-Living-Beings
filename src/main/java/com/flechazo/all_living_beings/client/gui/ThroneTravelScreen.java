@@ -30,7 +30,8 @@ public class ThroneTravelScreen extends Screen {
         var currentDim = mc.level != null ? mc.level.dimension().location() : null;
         List<ResourceLocation> dims = new ArrayList<>(ClientCache.DIMENSIONS);
         if (dims.isEmpty()) {
-            addRenderableWidget(Button.builder(Component.translatable("message.all_living_beings.travel_loading"), b -> {})
+            addRenderableWidget(Button.builder(Component.translatable("message.all_living_beings.travel_loading"), b -> {
+                    })
                     .bounds(x, y, mainW, bh).build());
             return;
         }

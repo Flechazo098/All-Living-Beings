@@ -1,12 +1,14 @@
 package com.flechazo.all_living_beings.client.gui;
 
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -17,6 +19,13 @@ public class EffectPickerScreen extends AbstractPickerScreen {
         super(Component.translatable(positiveMode ?
                 "gui.all_living_beings.select_positive_effects" :
                 "gui.all_living_beings.select_negative_effects"), parent, onComplete);
+        this.positiveMode = positiveMode;
+    }
+
+    public EffectPickerScreen(Screen parent, boolean positiveMode, Consumer<List<ResourceLocation>> onComplete, List<String> preselectedEffects) {
+        super(Component.translatable(positiveMode ?
+                "gui.all_living_beings.select_positive_effects" :
+                "gui.all_living_beings.select_negative_effects"), parent, onComplete, preselectedEffects);
         this.positiveMode = positiveMode;
     }
 

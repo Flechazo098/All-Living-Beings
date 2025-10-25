@@ -5,22 +5,26 @@ import com.flechazo.all_living_beings.client.command.GodCommands;
 import com.flechazo.all_living_beings.config.Config;
 import com.flechazo.all_living_beings.data.ALBSavedData;
 import com.flechazo.all_living_beings.item.HeavenlyThroneItem;
+import com.flechazo.all_living_beings.network.NetworkHandler;
 import com.flechazo.all_living_beings.network.SyncTitlePacket;
 import com.flechazo.all_living_beings.registry.ModItems;
-import com.flechazo.all_living_beings.network.NetworkHandler;
+import com.flechazo.all_living_beings.utils.MiningUtil;
 import com.flechazo.all_living_beings.utils.TeleportUtil;
 import com.flechazo.all_living_beings.utils.Util;
 import io.redspace.ironsspellbooks.api.events.SpellOnCastEvent;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
@@ -33,6 +37,7 @@ import net.minecraftforge.event.entity.EntityTeleportEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -42,10 +47,13 @@ import vazkii.botania.api.mana.ManaItem;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Mod.EventBusSubscriber(modid = AllLivingBeings.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class CommonEventHandler {
+
 
     @SubscribeEvent
     public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
@@ -91,12 +99,19 @@ public class CommonEventHandler {
 
         // 10) 奔跑时台阶高度提升（可配置）
         Util.applyStepAssistWhenSprinting(sp, isOwner);
+
+        // 11) 目光效果应用
+        Util.applyGazeEffects(sp, isOwner);
     }
 
 
     @SubscribeEvent
     public static void onServerTick(TickEvent.ServerTickEvent event) {
         if (event.phase != TickEvent.Phase.END || !(event.side.isServer())) return;
+
+        // 处理挖掘任务队列
+        MiningUtil.processMiningQueue();
+
         for (ServerPlayer player : event.getServer().getPlayerList().getPlayers()) {
             if (player == null) continue;
 
@@ -105,6 +120,7 @@ public class CommonEventHandler {
             Util.applyBOTInfinityManager(player, isOwner);
         }
     }
+
 
     @SubscribeEvent
     public static void onLivingTickPreventBossTarget(LivingEvent.LivingTickEvent event) {
@@ -152,6 +168,8 @@ public class CommonEventHandler {
 
         if (attacker instanceof ServerPlayer player) {
             if (Util.isOwnerActive(player)) {
+                Util.handleInstantKill(player, event.getEntity());
+
                 int fixedDmg = Config.COMMON.fixedAttackDamage.get();
                 if (fixedDmg > 0) {
                     event.setAmount(fixedDmg);
@@ -228,10 +246,10 @@ public class CommonEventHandler {
         if (!(event.getRayTraceResult() instanceof EntityHitResult hit)) return;
         if (!(hit.getEntity() instanceof ServerPlayer sp)) return;
         if (!Util.isOwnerActive(sp) || !Config.COMMON.godAttack.get()) return;
-    
+
         Projectile proj = event.getProjectile();
         var owner = proj.getOwner();
-    
+
         // 若无法识别射手，按当前方向远离玩家一段再放行，避免重碰撞
         if (!(owner instanceof LivingEntity shooter)) {
             Vec3 dir = proj.getDeltaMovement().normalize();
@@ -249,31 +267,31 @@ public class CommonEventHandler {
             event.setImpactResult(ProjectileImpactEvent.ImpactResult.SKIP_ENTITY);
             return;
         }
-    
+
         // 将弹射物移至玩家眼前并朝射手发射
         Vec3 start = sp.getEyePosition().add(sp.getLookAngle().scale(0.3));
         Vec3 aim = shooter.getEyePosition();
         Vec3 dir = aim.subtract(start).normalize();
         double speed = Math.max(1.5, proj.getDeltaMovement().length());
-    
+
         proj.setPos(start.x, start.y, start.z);
         proj.setDeltaMovement(dir.scale(speed * 1.25));
-    
+
         // 旋转朝向（避免物理抖动）
-        proj.setYRot((float)(Math.atan2(dir.z, dir.x) * 180.0 / Math.PI) - 90.0F);
-        proj.setXRot((float)(-(Math.atan2(dir.y, Math.sqrt(dir.x*dir.x + dir.z*dir.z)) * 180.0 / Math.PI)));
-    
+        proj.setYRot((float) (Math.atan2(dir.z, dir.x) * 180.0 / Math.PI) - 90.0F);
+        proj.setXRot((float) (-(Math.atan2(dir.y, Math.sqrt(dir.x * dir.x + dir.z * dir.z)) * 180.0 / Math.PI)));
+
         // 归属改为玩家，使回击能正常伤害射手
         proj.setOwner(sp);
-    
+
         proj.hurtMarked = true;
         proj.hasImpulse = true;
-    
+
         if (proj instanceof Arrow arrow) {
             arrow.setCritArrow(true);
             arrow.inGround = false;
         }
-    
+
         // 跳过当前命中处理，继续飞行，不再对玩家造成碰撞
         event.setImpactResult(ProjectileImpactEvent.ImpactResult.SKIP_ENTITY);
     }
@@ -289,6 +307,64 @@ public class CommonEventHandler {
         if (!(event.getEntity() instanceof ServerPlayer sp)) return;
         if (!Util.isOwnerActive(sp)) return;
         event.setManaCost(1);
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onBlockBreak(BlockEvent.BreakEvent event) {
+        if (!(event.getPlayer() instanceof ServerPlayer sp)) return;
+        if (!Util.isOwnerActive(sp)) return;
+
+        int miningMode = Config.COMMON.instantMiningMode.get();
+        if (miningMode == 0) return; // 禁用
+
+        var pos = event.getPos();
+        var level = event.getLevel();
+        boolean dropItems = Config.COMMON.instantMiningDrops.get();
+
+        // 计算立体范围
+        int range = switch (miningMode) {
+            case 1 -> 0; // 单体
+            case 2 -> 1; // 3×3×3
+            case 3 -> 2; // 5×5×5
+            case 4 -> 4; // 9×9×9
+            default -> 0;
+        };
+
+        if (range == 0) return; // 单体挖掘由原版处理
+
+        int maxBlocks = (range * 2 + 1) * (range * 2 + 1) * (range * 2 + 1);
+        int blocksDestroyed = 0;
+
+        for (int x = -range; x <= range && blocksDestroyed < maxBlocks; x++) {
+            for (int y = -range; y <= range && blocksDestroyed < maxBlocks; y++) {
+                for (int z = -range; z <= range && blocksDestroyed < maxBlocks; z++) {
+                    if (x == 0 && y == 0 && z == 0) continue; // 跳过中心方块
+
+                    var targetPos = pos.offset(x, y, z);
+                    var targetState = level.getBlockState(targetPos);
+
+                    if (targetState.isAir()) continue;
+
+                    level.destroyBlock(targetPos, dropItems, sp);
+                    blocksDestroyed++;
+                }
+            }
+        }
+
+        if (!dropItems) {
+            event.setExpToDrop(0);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onBreakSpeed(PlayerEvent.BreakSpeed event) {
+        if (!(event.getEntity() instanceof ServerPlayer sp)) return;
+        if (!Util.isOwnerActive(sp)) return;
+
+        int miningMode = Config.COMMON.instantMiningMode.get();
+        if (miningMode == 0) return;
+
+        event.setNewSpeed(100.0F);
     }
 
     @SubscribeEvent

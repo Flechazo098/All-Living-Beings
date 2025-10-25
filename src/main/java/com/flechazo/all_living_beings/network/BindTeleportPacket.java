@@ -38,11 +38,11 @@ public class BindTeleportPacket {
             data.setBound(pkt.dimId, here);
 
             sp.displayClientMessage(
-                Component.translatable(
-                    "message.all_living_beings.bind_success",
-                    pkt.dimId.toString(), here.getX(), here.getY(), here.getZ()
-                ),
-                true
+                    Component.translatable(
+                            "message.all_living_beings.bind_success",
+                            pkt.dimId.toString(), here.getX(), here.getY(), here.getZ()
+                    ),
+                    true
             );
         });
         ctx.setPacketHandled(true);

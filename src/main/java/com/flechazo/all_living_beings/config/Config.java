@@ -26,13 +26,18 @@ public class Config {
         public final ForgeConfigSpec.BooleanValue godAttack;
         public final ForgeConfigSpec.BooleanValue eternalTranscendence;
         public final ForgeConfigSpec.IntValue fixedAttackDamage;
+        public final ForgeConfigSpec.BooleanValue instantKillEnabled;
         public final ForgeConfigSpec.BooleanValue buffsEnabled;
         public final ForgeConfigSpec.IntValue buffMode;
-        public final ForgeConfigSpec.ConfigValue<List<? extends String>> positiveEffectIds;
-        public final ForgeConfigSpec.ConfigValue<List<? extends String>> negativeEffectIds;
+        public final ForgeConfigSpec.ConfigValue<List<? extends String>> effectIds;
+        public final ForgeConfigSpec.ConfigValue<List<? extends String>> gazeEffectIds;
+        public final ForgeConfigSpec.ConfigValue<List<? extends Integer>> gazeEffectDurations;
         public final ForgeConfigSpec.IntValue mobAttitude;
         public final ForgeConfigSpec.DoubleValue stepAssistHeight;
         public final ForgeConfigSpec.ConfigValue<List<? extends String>> bossEntityTypeIds;
+        public final ForgeConfigSpec.IntValue instantMiningMode;
+        public final ForgeConfigSpec.BooleanValue instantMiningDrops;
+        public final ForgeConfigSpec.BooleanValue disableAirMiningSlowdown;
 
         public Common(ForgeConfigSpec.Builder b) {
             b.push("all_living_beings");
@@ -43,29 +48,33 @@ public class Config {
             godAttack = b.define("godAttack", true);
             eternalTranscendence = b.define("eternalTranscendence", true);
             fixedAttackDamage = b.defineInRange("fixedAttackDamage", 1000, 0, Integer.MAX_VALUE);
+            instantKillEnabled = b.define("instantKillEnabled", false);
             b.pop();
             buffsEnabled = b.define("buffsEnabled", true);
             buffMode = b.defineInRange("buffMode", 3, 0, 3);
-            positiveEffectIds = b.defineList("positiveEffectIds",
+            effectIds = b.defineList("effectIds",
                     List.of(
-                            "minecraft:resistance",
-                            "minecraft:regeneration",
-                            "minecraft:speed",
-                            "minecraft:haste",
                             "minecraft:fire_resistance",
                             "minecraft:water_breathing",
-                            "minecraft:strength",
-                            "minecraft:health_boost"
-                    ), o -> o instanceof String);
-            negativeEffectIds = b.defineList("negativeEffectIds",
-                    List.of(
+                            "minecraft:conduit_power",
                             "minecraft:glowing"
                     ), o -> o instanceof String);
+            gazeEffectIds = b.defineList("gazeEffectIds",
+                    List.of(
+                            "minecraft:glowing",
+                            "minecraft:weakness"
+                    ), o -> o instanceof String);
+            gazeEffectDurations = b.defineList("gazeEffectDurations",
+                    List.of(600, 1200),
+                    o -> o instanceof Integer);
             mobAttitude = b.defineInRange("mobAttitude", 0, 0, 3);
             stepAssistHeight = b.defineInRange("stepAssistHeight", 3.0, 0.0, 10.0);
             bossEntityTypeIds = b.defineList("bossEntityTypeIds",
                     List.of("minecraft:ender_dragon", "minecraft:wither", "minecraft:warden"),
                     o -> o instanceof String);
+            instantMiningMode = b.comment("Instant mining mode: 0=Disabled, 1=Single Block (1x1x1), 2=3x3x3 Area, 3=5x5x5 Area, 4=9x9x9 Area").defineInRange("instantMiningMode", 0, 0, 4);
+            instantMiningDrops = b.define("instantMiningDrops", true);
+            disableAirMiningSlowdown = b.define("disableAirMiningSlowdown", false);
         }
     }
 

@@ -11,6 +11,7 @@
     "GiveCommandMixin",
     "InventoryMenuMixin",
     "LivingEntityMixin",
+    "PlayerMixin",
     "iss.RootSpellMixin",
     "iss.TelekinesisSpellMixin",
     "TeleportCommandMixin",

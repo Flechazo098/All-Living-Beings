@@ -34,13 +34,19 @@ public class PacketClientHandler {
                 pkt.godAttack(),
                 pkt.eternalTranscendence(),
                 pkt.fixedAttackDamage(),
+                pkt.instantKillEnabled(),
                 pkt.buffsEnabled(),
                 pkt.buffMode(),
-                pkt.positiveEffectIds(),
-                pkt.negativeEffectIds(),
+                pkt.effectIds(),
+                pkt.gazeEffectIds(),
+                pkt.gazeEffectDurations(),
                 pkt.mobAttitude(),
                 pkt.stepAssistHeight(),
-                pkt.bossEntityTypeIds()
+                pkt.bossEntityTypeIds(),
+                pkt.instantMiningMode(),
+                pkt.instantMiningDrops(),
+                pkt.disableAirMiningSlowdown()
         )));
+        ctx.setPacketHandled(true);
     }
 }

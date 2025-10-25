@@ -9,10 +9,11 @@ import java.util.function.Supplier;
 
 public record OpenGodConfigPacket(boolean absoluteDefense, boolean absoluteAutonomy, boolean godPermissions,
                                   boolean godSuppression, boolean godAttack, boolean eternalTranscendence,
-                                  int fixedAttackDamage, boolean buffsEnabled, int buffMode,
-                                  List<String> positiveEffectIds, List<String> negativeEffectIds,
+                                  int fixedAttackDamage, boolean instantKillEnabled, boolean buffsEnabled, int buffMode,
+                                  List<String> effectIds, List<String> gazeEffectIds, List<Integer> gazeEffectDurations,
                                   int mobAttitude, double stepAssistHeight,
-                                  List<String> bossEntityTypeIds) {
+                                  List<String> bossEntityTypeIds, int instantMiningMode, boolean instantMiningDrops,
+                                  boolean disableAirMiningSlowdown) {
 
     public static void encode(OpenGodConfigPacket pkt, FriendlyByteBuf buf) {
         GodConfigIO.write(buf,
@@ -23,20 +24,25 @@ public record OpenGodConfigPacket(boolean absoluteDefense, boolean absoluteAuton
                 pkt.godAttack,
                 pkt.eternalTranscendence,
                 pkt.fixedAttackDamage,
+                pkt.instantKillEnabled,
                 pkt.buffsEnabled,
                 pkt.buffMode,
-                pkt.positiveEffectIds,
-                pkt.negativeEffectIds,
+                pkt.effectIds,
+                pkt.gazeEffectIds,
+                pkt.gazeEffectDurations,
                 pkt.mobAttitude,
                 pkt.stepAssistHeight,
-                pkt.bossEntityTypeIds);
+                pkt.bossEntityTypeIds,
+                pkt.instantMiningMode,
+                pkt.instantMiningDrops,
+                pkt.disableAirMiningSlowdown);
     }
 
     public static OpenGodConfigPacket decode(FriendlyByteBuf buf) {
         var v = GodConfigIO.read(buf);
         return new OpenGodConfigPacket(v.absoluteDefense(), v.absoluteAutonomy(), v.godPermissions(), v.godSuppression(), v.godAttack(),
-                v.eternalTranscendence(), v.fixedAttackDamage(), v.buffsEnabled(), v.buffMode(), v.positiveEffectIds(), v.negativeEffectIds(),
-                v.mobAttitude(), v.stepAssistHeight(), v.bossEntityTypeIds());
+                v.eternalTranscendence(), v.fixedAttackDamage(), v.instantKillEnabled(), v.buffsEnabled(), v.buffMode(), v.effectIds(), v.gazeEffectIds(), v.gazeEffectDurations(),
+                v.mobAttitude(), v.stepAssistHeight(), v.bossEntityTypeIds(), v.instantMiningMode(), v.instantMiningDrops(), v.disableAirMiningSlowdown());
     }
 
     public static void handle(OpenGodConfigPacket pkt, Supplier<NetworkEvent.Context> ctxSupplier) {

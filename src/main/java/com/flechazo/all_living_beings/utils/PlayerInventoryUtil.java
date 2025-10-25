@@ -9,8 +9,8 @@ import top.theillusivec4.curios.api.CuriosApi;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class PlayerInventoryUtils {
-    private PlayerInventoryUtils() {
+public class PlayerInventoryUtil {
+    private PlayerInventoryUtil() {
     }
 
     private static void forEachCuriosSlotInternal(LivingEntity entity,

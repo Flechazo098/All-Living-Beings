@@ -33,33 +33,33 @@ public class Util {
     }
 
     public static boolean hasThrone(ServerPlayer player) {
-        return GodhoodEquipmentUtils.hasThrone(player);
+        return GodhoodEquipmentUtil.hasThrone(player);
     }
 
     public static boolean tryEquipToGodhood(ServerPlayer player, ItemStack stack) {
-        return GodhoodEquipmentUtils.tryEquipToGodhood(player, stack);
+        return GodhoodEquipmentUtil.tryEquipToGodhood(player, stack);
     }
 
     public static void autoEquipThroneIfOwner(ServerPlayer sp) {
         if (!isBoundOwner(sp) || hasThrone(sp)) return;
-        GodhoodEquipmentUtils.autoEquipThroneFromInventory(sp);
+        GodhoodEquipmentUtil.autoEquipThroneFromInventory(sp);
     }
 
     public static PurgeResult purgeFateStacks(ServerPlayer player) {
-        return GodhoodEquipmentUtils.purgeFateStacks(player);
+        return GodhoodEquipmentUtil.purgeFateStacks(player);
     }
 
 
     public static void updateFlightAbilities(ServerPlayer sp, boolean isOwner) {
-        EmperorBuffUtils.updateFlightAbilities(sp, isOwner);
+        EmperorBuffUtil.updateFlightAbilities(sp, isOwner);
     }
 
     public static void applyISSCastTimeReductionAttribute(ServerPlayer sp, boolean isOwner) {
-        EmperorBuffUtils.applyISSCastTimeReductionAttribute(sp, isOwner);
+        EmperorBuffUtil.applyISSCastTimeReductionAttribute(sp, isOwner);
     }
 
     public static void applyBOTInfinityManager(ServerPlayer sp, boolean isOwner) {
-        EmperorBuffUtils.applyBOTInfinityMana(sp, isOwner);
+        EmperorBuffUtil.applyBOTInfinityMana(sp, isOwner);
     }
 
 
@@ -74,26 +74,37 @@ public class Util {
 
     public static void purgeFateStacksAndNotify(ServerPlayer sp) {
         PurgeResult r = purgeFateStacks(sp);
-        EmperorBuffUtils.notifyPurgeResult(sp, r);
+        EmperorBuffUtil.notifyPurgeResult(sp, r);
     }
 
     public static void tickEmperorBuffs(ServerPlayer sp, boolean isOwner) {
         if (isOwner) {
-            EmperorBuffUtils.applyEmperorBuffs(sp);
+            EmperorBuffUtil.applyEmperorBuffs(sp);
         }
     }
 
     public static void applyReachAndMiningDistance(ServerPlayer sp, boolean isOwner) {
-        EmperorBuffUtils.applyReachAndMiningDistance(sp, isOwner);
+        EmperorBuffUtil.applyReachAndMiningDistance(sp, isOwner);
     }
 
     public static void applyStepAssistWhenSprinting(ServerPlayer sp, boolean isOwner) {
-        EmperorBuffUtils.applyStepAssistWhenSprinting(sp, isOwner);
+        EmperorBuffUtil.applyStepAssistWhenSprinting(sp, isOwner);
     }
 
     public static boolean shouldPreventTargeting(Mob mob, LivingEntity target) {
-        return EmperorBuffUtils.shouldPreventTargeting(mob, target);
+        return EmperorBuffUtil.shouldPreventTargeting(mob, target);
     }
+
+    public static void handleInstantKill(ServerPlayer sp, LivingEntity target) {
+        EmperorBuffUtil.handleInstantKill(sp, target);
+    }
+
+    public static void applyGazeEffects(ServerPlayer sp, boolean isOwner) {
+        if (isOwner) {
+            EmperorBuffUtil.applyGazeEffects(sp);
+        }
+    }
+
     public static LivingEntity findTarget(ServerPlayer p, double range) {
         Vec3 eye = p.getEyePosition();
         Vec3 dir = p.getViewVector(1.0F);
@@ -105,7 +116,7 @@ public class Util {
     }
 
     public static void forceUnequip(LivingEntity target, ServerPlayer caster) {
-        EmperorBuffUtils.forceUnequipAll(target, caster);
+        EmperorBuffUtil.forceUnequipAll(target, caster);
     }
 
     public static Component emperorTitle() {
@@ -113,10 +124,10 @@ public class Util {
     }
 
     public static PlayerTeam ensureEmperorTeam(ServerPlayer sp) {
-        return EmperorBuffUtils.ensureEmperorTeam(sp);
+        return EmperorBuffUtil.ensureEmperorTeam(sp);
     }
 
     public static void updateEmperorTeamMembership(ServerPlayer sp) {
-        EmperorBuffUtils.updateEmperorTeamMembership(sp);
+        EmperorBuffUtil.updateEmperorTeamMembership(sp);
     }
 }

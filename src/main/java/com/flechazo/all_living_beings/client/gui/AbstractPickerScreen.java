@@ -8,7 +8,10 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -36,6 +39,21 @@ public abstract class AbstractPickerScreen extends Screen {
         this.selectedItems = new HashSet<>();
     }
 
+    protected AbstractPickerScreen(Component title, Screen parent, Consumer<List<ResourceLocation>> onComplete, List<String> preselectedItems) {
+        super(title);
+        this.parent = parent;
+        this.onComplete = onComplete;
+        this.selectedItems = new HashSet<>();
+        if (preselectedItems != null) {
+            preselectedItems.forEach(item -> {
+                try {
+                    selectedItems.add(new ResourceLocation(item));
+                } catch (Exception ignored) {
+                }
+            });
+        }
+    }
+
     @Override
     protected void init() {
         super.init();
@@ -47,8 +65,11 @@ public abstract class AbstractPickerScreen extends Screen {
     }
 
     protected abstract void initializeItems();
+
     protected abstract String getItemDisplayName(ResourceLocation item);
+
     protected abstract Component getSearchPlaceholder();
+
     protected abstract void createBottomButtons();
 
     private void calculateLayout() {
@@ -76,7 +97,7 @@ public abstract class AbstractPickerScreen extends Screen {
 
     private void createWidgets() {
         addRenderableWidget(Button.builder(Component.translatable("gui.all_living_beings.back"),
-                b -> Minecraft.getInstance().setScreen(parent))
+                        b -> Minecraft.getInstance().setScreen(parent))
                 .bounds(10, layout.backButtonY, 60, BUTTON_HEIGHT).build());
 
         int searchWidth = layout.listWidth - 100;
@@ -87,7 +108,10 @@ public abstract class AbstractPickerScreen extends Screen {
         addRenderableWidget(searchBox);
 
         addRenderableWidget(Button.builder(Component.translatable("gui.all_living_beings.clear_search"),
-                b -> { searchBox.setValue(""); updateFilter(""); })
+                        b -> {
+                            searchBox.setValue("");
+                            updateFilter("");
+                        })
                 .bounds(layout.centerX + layout.listWidth / 2 - 95, layout.searchY, 95, BUTTON_HEIGHT).build());
 
         createScrollButtons();
@@ -266,5 +290,6 @@ public abstract class AbstractPickerScreen extends Screen {
     }
 
     protected record LayoutInfo(int centerX, int listWidth, int titleY, int backButtonY, int searchY, int hintY,
-                              int countY, int listStartY, int listHeight, int visibleItems, int buttonY) {}
+                                int countY, int listStartY, int listHeight, int visibleItems, int buttonY) {
+    }
 }

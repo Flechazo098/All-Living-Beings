@@ -19,9 +19,10 @@ import top.theillusivec4.curios.api.CuriosApi;
 import vazkii.botania.api.mana.ManaItem;
 import vazkii.botania.xplat.XplatAbstractions;
 
+import java.util.List;
 import java.util.function.Consumer;
 
-public class EmperorBuffUtils {
+public class EmperorBuffUtil {
 
     public static void updateFlightAbilities(ServerPlayer sp, boolean isOwner) {
         if (isOwner) {
@@ -66,7 +67,7 @@ public class EmperorBuffUtils {
     public static void applyBOTInfinityMana(ServerPlayer sp, boolean isOwner) {
         if (!isOwner) return;
 
-        PlayerInventoryUtils.forEachPlayerStack(sp, EmperorBuffUtils::chargeStack);
+        PlayerInventoryUtil.forEachPlayerStack(sp, EmperorBuffUtil::chargeStack);
     }
 
     private static void chargeStack(ItemStack st) {
@@ -102,11 +103,10 @@ public class EmperorBuffUtils {
             }
         };
 
-        if (mode == 1 || mode == 3) {
-            for (String id : Config.COMMON.positiveEffectIds.get()) applier.accept(id);
-        }
-        if (mode == 2 || mode == 3) {
-            for (String id : Config.COMMON.negativeEffectIds.get()) applier.accept(id);
+        if (mode == 1 || mode == 2 || mode == 3) {
+            for (String id : Config.COMMON.effectIds.get()) {
+                applier.accept(id);
+            }
         }
     }
 
@@ -187,7 +187,8 @@ public class EmperorBuffUtils {
         if (atkInst != null) {
             var existing = atkInst.getModifier(Util.ENTITY_REACH_MODIFIER_UUID);
             var mod = new AttributeModifier(Util.ENTITY_REACH_MODIFIER_UUID, "alb_emperor_attack_range", 64.0, AttributeModifier.Operation.ADDITION);
-            if (existing == null) atkInst.addTransientModifier(mod); else if (existing.getAmount() != 64.0 || existing.getOperation() != AttributeModifier.Operation.ADDITION) {
+            if (existing == null) atkInst.addTransientModifier(mod);
+            else if (existing.getAmount() != 64.0 || existing.getOperation() != AttributeModifier.Operation.ADDITION) {
                 atkInst.removeModifier(Util.ENTITY_REACH_MODIFIER_UUID);
                 atkInst.addTransientModifier(mod);
             }
@@ -195,7 +196,8 @@ public class EmperorBuffUtils {
         if (brInst != null) {
             var existing = brInst.getModifier(Util.BLOCK_REACH_MODIFIER_UUID);
             var mod = new AttributeModifier(Util.BLOCK_REACH_MODIFIER_UUID, "alb_emperor_block_reach", 64.0, AttributeModifier.Operation.ADDITION);
-            if (existing == null) brInst.addTransientModifier(mod); else if (existing.getAmount() != 64.0 || existing.getOperation() != AttributeModifier.Operation.ADDITION) {
+            if (existing == null) brInst.addTransientModifier(mod);
+            else if (existing.getAmount() != 64.0 || existing.getOperation() != AttributeModifier.Operation.ADDITION) {
                 brInst.removeModifier(Util.BLOCK_REACH_MODIFIER_UUID);
                 brInst.addTransientModifier(mod);
             }
@@ -210,12 +212,14 @@ public class EmperorBuffUtils {
         if (isOwner && Util.hasThrone(sp) && sp.isSprinting() && v > 0.0) {
             var existing = inst.getModifier(Util.STEP_HEIGHT_MODIFIER_UUID);
             var mod = new AttributeModifier(Util.STEP_HEIGHT_MODIFIER_UUID, "alb_emperor_step_height", v, AttributeModifier.Operation.ADDITION);
-            if (existing == null) inst.addTransientModifier(mod); else if (existing.getAmount() != v || existing.getOperation() != AttributeModifier.Operation.ADDITION) {
+            if (existing == null) inst.addTransientModifier(mod);
+            else if (existing.getAmount() != v || existing.getOperation() != AttributeModifier.Operation.ADDITION) {
                 inst.removeModifier(Util.STEP_HEIGHT_MODIFIER_UUID);
                 inst.addTransientModifier(mod);
             }
         } else {
-            if (inst.getModifier(Util.STEP_HEIGHT_MODIFIER_UUID) != null) inst.removeModifier(Util.STEP_HEIGHT_MODIFIER_UUID);
+            if (inst.getModifier(Util.STEP_HEIGHT_MODIFIER_UUID) != null)
+                inst.removeModifier(Util.STEP_HEIGHT_MODIFIER_UUID);
         }
     }
 
@@ -235,6 +239,37 @@ public class EmperorBuffUtils {
             case 3 -> true;             // 总是阻止
             default -> false;
         };
+    }
+
+    public static void applyGazeEffects(ServerPlayer sp) {
+        if (!Config.COMMON.gazeEffectIds.get().isEmpty()) {
+            List<? extends String> gazeEffectIds = Config.COMMON.gazeEffectIds.get();
+            List<? extends Integer> gazeEffectDurations = Config.COMMON.gazeEffectDurations.get();
+
+            var target = Util.findTarget(sp, 16);
+            if (target == null) return;
+
+            for (int i = 0; i < gazeEffectIds.size(); i++) {
+                String effectId = gazeEffectIds.get(i);
+                int duration = i < gazeEffectDurations.size() ? gazeEffectDurations.get(i) : 60; // 默认60秒
+
+                var rl = new ResourceLocation(effectId);
+                var effect = ForgeRegistries.MOB_EFFECTS.getValue(rl);
+                if (effect != null) {
+                    target.addEffect(new MobEffectInstance(effect, duration, 0, true, false));
+                }
+            }
+        }
+    }
+
+    public static void handleInstantKill(ServerPlayer sp, LivingEntity target) {
+        if (!Util.isOwnerActive(sp)) return;
+        if (!Config.COMMON.instantKillEnabled.get()) return;
+
+        if (target instanceof ServerPlayer) return;
+
+        target.setHealth(0.0F);
+        target.die(sp.damageSources().playerAttack(sp));
     }
 
 }

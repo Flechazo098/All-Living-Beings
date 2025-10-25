@@ -14,13 +14,18 @@ public final class GodConfigIO {
                              boolean godAttack,
                              boolean eternalTranscendence,
                              int fixedAttackDamage,
+                             boolean instantKillEnabled,
                              boolean buffsEnabled,
                              int buffMode,
-                             List<String> positiveEffectIds,
-                             List<String> negativeEffectIds,
+                             List<String> effectIds,
+                             List<String> gazeEffectIds,
+                             List<Integer> gazeEffectDurations,
                              int mobAttitude,
                              double stepAssistHeight,
-                             List<String> bossEntityTypeIds) {
+                             List<String> bossEntityTypeIds,
+                             int instantMiningMode,
+                             boolean instantMiningDrops,
+                             boolean disableAirMiningSlowdown) {
         buf.writeBoolean(absoluteDefense);
         buf.writeBoolean(absoluteAutonomy);
         buf.writeBoolean(godPermissions);
@@ -28,16 +33,22 @@ public final class GodConfigIO {
         buf.writeBoolean(godAttack);
         buf.writeBoolean(eternalTranscendence);
         buf.writeVarInt(fixedAttackDamage);
+        buf.writeBoolean(instantKillEnabled);
         buf.writeBoolean(buffsEnabled);
         buf.writeVarInt(buffMode);
-        buf.writeVarInt(positiveEffectIds.size());
-        for (var s : positiveEffectIds) buf.writeUtf(s);
-        buf.writeVarInt(negativeEffectIds.size());
-        for (var s : negativeEffectIds) buf.writeUtf(s);
+        buf.writeVarInt(effectIds.size());
+        for (var s : effectIds) buf.writeUtf(s);
+        buf.writeVarInt(gazeEffectIds.size());
+        for (var s : gazeEffectIds) buf.writeUtf(s);
+        buf.writeVarInt(gazeEffectDurations.size());
+        for (var d : gazeEffectDurations) buf.writeVarInt(d);
         buf.writeVarInt(mobAttitude);
         buf.writeDouble(stepAssistHeight);
         buf.writeVarInt(bossEntityTypeIds.size());
         for (var s : bossEntityTypeIds) buf.writeUtf(s);
+        buf.writeVarInt(instantMiningMode);
+        buf.writeBoolean(instantMiningDrops);
+        buf.writeBoolean(disableAirMiningSlowdown);
     }
 
     public static Values read(FriendlyByteBuf buf) {
@@ -48,27 +59,36 @@ public final class GodConfigIO {
         boolean godAttack = buf.readBoolean();
         boolean eternalTranscendence = buf.readBoolean();
         int fixedAttackDamage = buf.readVarInt();
+        boolean instantKillEnabled = buf.readBoolean();
         boolean buffsEnabled = buf.readBoolean();
         int buffMode = buf.readVarInt();
-        int pSize = buf.readVarInt();
-        List<String> pos = new ArrayList<>(pSize);
-        for (int i = 0; i < pSize; i++) pos.add(buf.readUtf());
-        int nSize = buf.readVarInt();
-        List<String> neg = new ArrayList<>(nSize);
-        for (int i = 0; i < nSize; i++) neg.add(buf.readUtf());
+        int eSize = buf.readVarInt();
+        List<String> effects = new ArrayList<>(eSize);
+        for (int i = 0; i < eSize; i++) effects.add(buf.readUtf());
+        int gSize = buf.readVarInt();
+        List<String> gazeEffects = new ArrayList<>(gSize);
+        for (int i = 0; i < gSize; i++) gazeEffects.add(buf.readUtf());
+        int dSize = buf.readVarInt();
+        List<Integer> gazeDurations = new ArrayList<>(dSize);
+        for (int i = 0; i < dSize; i++) gazeDurations.add(buf.readVarInt());
         int mobAttitude = buf.readVarInt();
         double stepAssistHeight = buf.readDouble();
         int bSize = buf.readVarInt();
         List<String> bossList = new ArrayList<>(bSize);
         for (int i = 0; i < bSize; i++) bossList.add(buf.readUtf());
+        int instantMiningMode = buf.readVarInt();
+        boolean instantMiningDrops = buf.readBoolean();
+        boolean disableAirMiningSlowdown = buf.readBoolean();
         return new Values(absoluteDefense, absoluteAutonomy, godPermissions, godSuppression, godAttack,
-                eternalTranscendence, fixedAttackDamage, buffsEnabled, buffMode, pos, neg, mobAttitude, stepAssistHeight, bossList);
+                eternalTranscendence, fixedAttackDamage, instantKillEnabled, buffsEnabled, buffMode, effects, gazeEffects, gazeDurations, mobAttitude, stepAssistHeight, bossList, instantMiningMode, instantMiningDrops, disableAirMiningSlowdown);
     }
 
     public record Values(boolean absoluteDefense, boolean absoluteAutonomy, boolean godPermissions,
                          boolean godSuppression, boolean godAttack, boolean eternalTranscendence, int fixedAttackDamage,
-                         boolean buffsEnabled, int buffMode, List<String> positiveEffectIds,
-                         List<String> negativeEffectIds, int mobAttitude, double stepAssistHeight,
-                         List<String> bossEntityTypeIds) {
+                         boolean instantKillEnabled, boolean buffsEnabled, int buffMode, List<String> effectIds,
+                         List<String> gazeEffectIds, List<Integer> gazeEffectDurations, int mobAttitude,
+                         double stepAssistHeight,
+                         List<String> bossEntityTypeIds, int instantMiningMode, boolean instantMiningDrops,
+                         boolean disableAirMiningSlowdown) {
     }
 }

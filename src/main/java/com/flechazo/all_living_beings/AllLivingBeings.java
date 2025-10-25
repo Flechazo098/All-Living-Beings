@@ -1,8 +1,8 @@
 package com.flechazo.all_living_beings;
 
 import com.flechazo.all_living_beings.config.Config;
-import com.flechazo.all_living_beings.registry.ModItems;
 import com.flechazo.all_living_beings.network.NetworkHandler;
+import com.flechazo.all_living_beings.registry.ModItems;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;

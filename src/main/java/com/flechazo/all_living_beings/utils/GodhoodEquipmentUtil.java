@@ -13,7 +13,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class GodhoodEquipmentUtils {
+public class GodhoodEquipmentUtil {
     public static boolean hasThrone(ServerPlayer player) {
         return CuriosApi.getCuriosInventory(player)
                 .map(handler -> handler.getStacksHandler("godhood")
@@ -97,7 +97,7 @@ public class GodhoodEquipmentUtils {
 
         AtomicInteger count = new AtomicInteger(0);
 
-        PlayerInventoryUtils.forEachCuriosSlot(player, "godhood", (inv, i) -> {
+        PlayerInventoryUtil.forEachCuriosSlot(player, "godhood", (inv, i) -> {
             ItemStack stack = inv.getStackInSlot(i);
             if (stack.is(ModItems.HEAVENLY_THRONE.get())) {
                 if (isOwner && count.get() == 0) {

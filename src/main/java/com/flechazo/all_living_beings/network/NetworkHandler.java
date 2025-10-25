@@ -83,13 +83,18 @@ public class NetworkHandler {
                 Config.COMMON.godAttack.get(),
                 Config.COMMON.eternalTranscendence.get(),
                 Config.COMMON.fixedAttackDamage.get(),
+                Config.COMMON.instantKillEnabled.get(),
                 Config.COMMON.buffsEnabled.get(),
                 Config.COMMON.buffMode.get(),
-                List.copyOf(Config.COMMON.positiveEffectIds.get()),
-                List.copyOf(Config.COMMON.negativeEffectIds.get()),
+                List.copyOf(Config.COMMON.effectIds.get()),
+                List.copyOf(Config.COMMON.gazeEffectIds.get()),
+                List.copyOf(Config.COMMON.gazeEffectDurations.get()),
                 Config.COMMON.mobAttitude.get(),
                 Config.COMMON.stepAssistHeight.get(),
-                List.copyOf(Config.COMMON.bossEntityTypeIds.get())
+                List.copyOf(Config.COMMON.bossEntityTypeIds.get()),
+                Config.COMMON.instantMiningMode.get(),
+                Config.COMMON.instantMiningDrops.get(),
+                Config.COMMON.disableAirMiningSlowdown.get()
         ));
     }
 
@@ -100,13 +105,18 @@ public class NetworkHandler {
                                        boolean godAttack,
                                        boolean eternalTranscendence,
                                        int fixedAttackDamage,
+                                       boolean instantKillEnabled,
                                        boolean buffsEnabled,
                                        int buffMode,
-                                       List<String> positiveEffectIds,
-                                       List<String> negativeEffectIds,
+                                       List<String> effectIds,
+                                       List<String> gazeEffectIds,
+                                       List<Integer> gazeEffectDurations,
                                        int mobAttitude,
                                        double stepAssistHeight,
-                                       List<String> bossEntityTypeIds) {
+                                       List<String> bossEntityTypeIds,
+                                       int instantMiningMode,
+                                       boolean instantMiningDrops,
+                                       boolean disableAirMiningSlowdown) {
         CHANNEL.sendToServer(new UpdateGodConfigPacket(
                 absoluteDefense,
                 absoluteAutonomy,
@@ -115,13 +125,18 @@ public class NetworkHandler {
                 godAttack,
                 eternalTranscendence,
                 fixedAttackDamage,
+                instantKillEnabled,
                 buffsEnabled,
                 buffMode,
-                positiveEffectIds,
-                negativeEffectIds,
+                effectIds,
+                gazeEffectIds,
+                gazeEffectDurations,
                 mobAttitude,
                 stepAssistHeight,
-                bossEntityTypeIds
+                bossEntityTypeIds,
+                instantMiningMode,
+                instantMiningDrops,
+                disableAirMiningSlowdown
         ));
     }
 }

@@ -148,6 +148,14 @@ repositories {
          dir 'libs'
      }
     maven {
+        // Add curse maven to repositories
+        name = "Curse Maven"
+        url = "https://www.cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+    maven {
         name = "Illusive Soulworks maven"
         url = "https://maven.theillusivec4.top/"
     }
@@ -216,6 +224,8 @@ dependencies {
     compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
 
+    implementation fg.deobf("curse.maven:tweakerge-915857:5633999")
+    implementation fg.deobf("curse.maven:mafglib-910766:6763273")
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
 }
